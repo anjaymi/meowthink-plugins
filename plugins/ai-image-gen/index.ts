@@ -46,7 +46,7 @@ const DEFAULT_CONFIG: ImageModelConfig = {
 
 const PROVIDER_PRESETS: Record<string, Partial<ImageModelConfig>> = {
   gemini: {
-    model: 'gemini-2.0-flash-exp',
+    model: 'gemini-2.0-flash-preview-image-generation',
     endpoint: '',
   },
   siliconflow: {
@@ -83,10 +83,16 @@ const initTauriFetch = async () => {
   tauriFetchInitialized = true;
   if (isTauriEnv()) {
     try {
-      const { fetch: tauri_fetch } = await import('@tauri-apps/plugin-http');
-      tauriFetch = tauri_fetch;
+      // Use window.__TAURI__ global object instead of dynamic import
+      // This works better in Tauri WebView environment
+      const tauriGlobal = (window as unknown as { __TAURI__?: Record<string, unknown> }).__TAURI__;
+      if (tauriGlobal?.http) {
+        const httpModule = tauriGlobal.http as { fetch: typeof fetch };
+        tauriFetch = httpModule.fetch;
+        console.log('[AIImageGen] Using Tauri HTTP fetch');
+      }
     } catch (e) {
-      console.warn('[AIImageGen] Tauri HTTP plugin not available');
+      console.warn('[AIImageGen] Tauri HTTP plugin not available:', e);
     }
   }
   return tauriFetch;
@@ -163,8 +169,48 @@ async function generateImage(
 
   // Handle Gemini provider (uses Google GenAI SDK)
   if (config.provider === 'gemini') {
-    const { GoogleGenAI } = await import('@google/genai');
+    const { GoogleGenAI, Modality } = await import('@google/genai');
     const ai = new GoogleGenAI({ apiKey: config.apiKey });
+    const modelName = config.model || 'imagen-3.0-generate-001';
+    
+    console.log('[AIImageGen] Using Gemini model:', modelName);
+
+    // Check if using Imagen model (dedicated image generation)
+    if (modelName.includes('imagen')) {
+      console.log('[AIImageGen] Using Imagen API');
+      try {
+        const response = await ai.models.generateImages({
+          model: modelName,
+          prompt: prompt,
+          config: {
+            numberOfImages: 1,
+            aspectRatio: width === height ? '1:1' : (width > height ? '16:9' : '9:16'),
+          },
+        });
+
+        const images = (response as unknown as { generatedImages?: Array<{ image?: { imageBytes?: string } }> })?.generatedImages;
+        if (images && images.length > 0 && images[0].image?.imageBytes) {
+          return `data:image/png;base64,${images[0].image.imageBytes}`;
+        }
+        throw new Error(isZh ? '未能获取生成的图片' : 'Failed to get generated image');
+      } catch (e) {
+        const err = e as Error;
+        console.error('[AIImageGen] Imagen API error:', err);
+        if (err.message?.includes('404') || err.message?.includes('not found')) {
+          throw new Error(isZh ? 'Imagen 模型需要启用 Vertex AI。请使用 SiliconFlow 或其他服务商。' : 'Imagen requires Vertex AI. Please use SiliconFlow or other providers.');
+        }
+        throw err;
+      }
+    }
+
+    // Use Gemini multimodal model (gemini-2.0-flash-preview-image-generation)
+    console.log('[AIImageGen] Using Gemini multimodal API');
+    
+    if (!modelName.includes('image-generation') && !modelName.includes('exp')) {
+      throw new Error(isZh 
+        ? `模型 ${modelName} 不支持图像生成。请使用 imagen-3.0-generate-001 或 gemini-2.0-flash-preview-image-generation` 
+        : `Model ${modelName} does not support image generation.`);
+    }
 
     const contents: Array<{ text?: string; inlineData?: { mimeType: string; data: string } }> = [
       { text: prompt }
@@ -176,22 +222,33 @@ async function generateImage(
       contents.unshift({ inlineData: { mimeType, data: base64Data } });
     }
 
-    const response = await ai.models.generateContent({
-      model: config.model || 'gemini-2.0-flash-exp',
-      contents: [{ role: 'user', parts: contents }],
-      config: { responseModalities: ['image', 'text'] } as unknown as Record<string, unknown>,
-    });
+    try {
+      const response = await ai.models.generateContent({
+        model: modelName,
+        contents: [{ role: 'user', parts: contents }],
+        config: { responseModalities: [Modality.IMAGE, Modality.TEXT] },
+      });
 
-    const candidate = (response as unknown as { 
-      candidates?: Array<{ content?: { parts?: Array<{ inlineData?: { mimeType: string; data: string } }> } }> 
-    })?.candidates?.[0];
-    
-    for (const part of candidate?.content?.parts || []) {
-      if (part.inlineData) {
-        return `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+      const candidate = (response as unknown as { 
+        candidates?: Array<{ content?: { parts?: Array<{ inlineData?: { mimeType: string; data: string } }> } }> 
+      })?.candidates?.[0];
+      
+      for (const part of candidate?.content?.parts || []) {
+        if (part.inlineData) {
+          return `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+        }
       }
+      throw new Error(isZh ? '未能获取生成的图片' : 'Failed to get generated image');
+    } catch (e) {
+      const err = e as Error;
+      console.error('[AIImageGen] Gemini API error:', err);
+      if (err.message?.includes('only supports text')) {
+        throw new Error(isZh 
+          ? `模型 ${modelName} 只支持文本输出，不支持图像生成。请更换模型。` 
+          : `Model ${modelName} only supports text output.`);
+      }
+      throw err;
     }
-    throw new Error(isZh ? '未能获取生成的图片' : 'Failed to get generated image');
   }
 
   // OpenAI compatible API
@@ -251,19 +308,18 @@ export const activate: IExtensionModule['activate'] = (context, extensionApi) =>
       handler: async () => {
         if (!api) return;
         
-        // Show configuration dialog
-        const result = await api.ui.showDialog({
-          title: isZh ? '配置图像生成模型' : 'Configure Image Model',
-          message: isZh 
-            ? `当前配置:\n服务商: ${state.config.provider}\n模型: ${state.config.model}\nAPI Key: ${state.config.apiKey ? '已设置' : '未设置'}\n\n请在扩展设置中修改配置。`
-            : `Current config:\nProvider: ${state.config.provider}\nModel: ${state.config.model}\nAPI Key: ${state.config.apiKey ? 'Set' : 'Not set'}\n\nPlease modify in extension settings.`,
-          type: 'info',
-        });
+        // Show notification to guide user to settings
+        api.ui.showNotification(
+          isZh 
+            ? '请在 设置 → AI 生图 中配置 API' 
+            : 'Please configure API in Settings → AI Image',
+          'info'
+        );
       },
     })
   );
 
-  // Command: Generate Image
+  // Command: Generate Image (uses selected node text or shows hint)
   context.subscriptions.push(
     api.ui.registerCommand({
       id: 'generateImage',
@@ -271,18 +327,29 @@ export const activate: IExtensionModule['activate'] = (context, extensionApi) =>
       handler: async () => {
         if (!api) return;
 
-        // Simple prompt input via dialog
-        const promptResult = await api.ui.showDialog({
-          title: isZh ? 'AI 生图' : 'AI Image Generation',
-          message: isZh ? '请输入图片描述提示词：' : 'Enter image description prompt:',
-          type: 'info',
-          buttons: [isZh ? '取消' : 'Cancel', isZh ? '生成' : 'Generate'],
-        });
+        // Check if API key is configured
+        if (!state.config.apiKey) {
+          api.ui.showNotification(
+            isZh ? '请先在 设置 → AI 生图 中配置 API Key' : 'Please configure API Key in Settings → AI Image first',
+            'warning'
+          );
+          return;
+        }
 
-        if (promptResult.cancelled || promptResult.button === 0) return;
-
-        // For now, use a simple prompt - in future could add input field
-        const prompt = isZh ? '一只可爱的猫咪' : 'A cute cat';
+        // Try to use selected node text as prompt
+        const selected = api.nodes.getSelected();
+        let prompt = '';
+        
+        if (selected.length > 0 && selected[0].text?.trim()) {
+          prompt = selected[0].text.trim();
+        } else {
+          // No selection or empty text, show hint
+          api.ui.showNotification(
+            isZh ? '请先选择一个有文本的节点，或右键节点选择"生成图片"' : 'Please select a node with text, or right-click a node and select "Generate Image"',
+            'info'
+          );
+          return;
+        }
         
         api.ui.showNotification(isZh ? '正在生成图片...' : 'Generating image...', 'info');
 
@@ -324,6 +391,15 @@ export const activate: IExtensionModule['activate'] = (context, extensionApi) =>
       title: { en: 'Generate Image from Node', zh: '从节点生成图片' },
       handler: async () => {
         if (!api) return;
+
+        // Check if API key is configured
+        if (!state.config.apiKey) {
+          api.ui.showNotification(
+            isZh ? '请先在 设置 → AI 生图 中配置 API Key' : 'Please configure API Key in Settings → AI Image first',
+            'warning'
+          );
+          return;
+        }
 
         const selected = api.nodes.getSelected();
         if (selected.length === 0) {
@@ -375,12 +451,11 @@ export const activate: IExtensionModule['activate'] = (context, extensionApi) =>
       handler: async () => {
         if (!api) return;
         
-        // Note: In a real implementation, this would open a proper settings UI
-        // For now, show info about current config
+        // Guide user to settings
         api.ui.showNotification(
           isZh 
-            ? '请在扩展存储中设置 API Key (meowthink.ai-image-gen.ai_image_gen_config)' 
-            : 'Please set API Key in extension storage',
+            ? '请在 设置 → AI 生图 中配置 API Key' 
+            : 'Please configure API Key in Settings → AI Image',
           'info'
         );
       },
@@ -395,13 +470,13 @@ export const activate: IExtensionModule['activate'] = (context, extensionApi) =>
       handler: async () => {
         if (!api) return;
 
-        const result = await api.ui.showDialog({
-          title: isZh ? '选择服务商' : 'Select Provider',
-          message: isZh 
-            ? '可用服务商:\n1. Gemini (Google)\n2. SiliconFlow (硅基流动)\n3. OpenRouter\n4. Volcano (火山引擎)\n5. Custom (自定义)'
-            : 'Available providers:\n1. Gemini (Google)\n2. SiliconFlow\n3. OpenRouter\n4. Volcano\n5. Custom',
-          type: 'info',
-        });
+        // Guide user to settings
+        api.ui.showNotification(
+          isZh 
+            ? '请在 设置 → AI 生图 中选择服务商' 
+            : 'Please select provider in Settings → AI Image',
+          'info'
+        );
       },
     })
   );

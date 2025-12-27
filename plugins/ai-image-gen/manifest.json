@@ -4,14 +4,14 @@
     "en": "AI Image Generation",
     "zh": "AI 生图"
   },
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": {
-    "en": "Generate images using AI models (Gemini, SiliconFlow, OpenRouter, Volcano)",
-    "zh": "使用 AI 模型生成图片（支持 Gemini、硅基流动、OpenRouter、火山引擎）"
+    "en": "Generate images using AI models with multi-model support (Gemini, SiliconFlow, OpenRouter, Volcano)",
+    "zh": "使用 AI 模型生成图片，支持多模型配置（Gemini、硅基流动、OpenRouter、火山引擎）"
   },
   "usage": {
-    "en": "1. Configure API Key in extension settings\n2. Right-click on canvas -> 'AI Generate Image'\n3. Or right-click on a node -> 'Generate Image' to use node text as prompt",
-    "zh": "1. 在扩展设置中配置 API Key\n2. 右键画布 -> 'AI 生成图片'\n3. 或右键节点 -> '生成图片' 使用节点文本作为提示词"
+    "en": "1. Configure API Key in extension settings (supports multiple model configs)\n2. Right-click on canvas -> 'AI Generate Image'\n3. Or right-click on a node -> 'Generate Image' to use node text as prompt\n4. Use the image generation panel for more options (aspect ratio, resolution)",
+    "zh": "1. 在扩展设置中配置 API Key（支持多模型配置）\n2. 右键画布 -> 'AI 生成图片'\n3. 或右键节点 -> '生成图片' 使用节点文本作为提示词\n4. 使用生图面板可选择比例、分辨率等更多选项"
   },
   "author": "MeowThink",
   "homepage": "https://github.com/anjaymi/meowthink-plugins",

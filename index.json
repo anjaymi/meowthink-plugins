@@ -1,5 +1,5 @@
 ﻿{
-    "updatedAt":  "2025-12-27T16:08:13Z",
+    "updatedAt":  "2025-12-27T22:57:19Z",
     "version":  "1.0.0",
     "plugins":  [
                     {
@@ -17,15 +17,15 @@
                                  },
                         "branch":  "main",
                         "description":  {
-                                            "en":  "Generate images using AI models (Gemini, SiliconFlow, OpenRouter, Volcano)",
-                                            "zh":  "使用 AI 模型生成图片（支持 Gemini、硅基流动、OpenRouter、火山引擎）"
+                                            "en":  "Generate images using AI models with multi-model support (Gemini, SiliconFlow, OpenRouter, Volcano)",
+                                            "zh":  "使用 AI 模型生成图片，支持多模型配置（Gemini、硅基流动、OpenRouter、火山引擎）"
                                         },
-                        "version":  "1.0.0",
+                        "version":  "1.1.0",
                         "author":  "MeowThink",
                         "repo":  "anjaymi/meowthink-plugins",
                         "icon":  "sparkles",
                         "homepage":  "https://github.com/anjaymi/meowthink-plugins/tree/main/plugins/ai-image-gen",
-                        "updatedAt":  "2025-12-27T16:08:13Z"
+                        "updatedAt":  "2025-12-27T22:57:19Z"
                     }
                 ]
 }
