@@ -1,5 +1,5 @@
 ﻿{
-    "updatedAt":  "2025-12-27T15:51:42Z",
+    "updatedAt":  "2025-12-27T16:08:13Z",
     "version":  "1.0.0",
     "plugins":  [
                     {
@@ -25,7 +25,7 @@
                         "repo":  "anjaymi/meowthink-plugins",
                         "icon":  "sparkles",
                         "homepage":  "https://github.com/anjaymi/meowthink-plugins/tree/main/plugins/ai-image-gen",
-                        "updatedAt":  "2025-12-27T15:51:42Z"
+                        "updatedAt":  "2025-12-27T16:08:13Z"
                     }
                 ]
 }
