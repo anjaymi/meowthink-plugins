@@ -1,50 +1,31 @@
-{
-  "version": "1.0.0",
-  "updatedAt": "2024-12-27T00:00:00Z",
-  "plugins": [
-    {
-      "id": "meowthink.ai-image-gen",
-      "name": {
-        "en": "AI Image Generation",
-        "zh": "AI 生图"
-      },
-      "description": {
-        "en": "Generate images using AI models (Gemini, SiliconFlow, OpenRouter, Volcano)",
-        "zh": "使用 AI 模型生成图片（支持 Gemini、硅基流动、OpenRouter、火山引擎）"
-      },
-      "version": "1.0.0",
-      "author": "MeowThink",
-      "icon": "sparkles",
-      "category": "productivity",
-      "tags": ["ai", "image", "generation", "gemini", "flux"],
-      "repo": "anjaymi/meowthink-plugins",
-      "branch": "main",
-      "path": "plugins/ai-image-gen",
-      "homepage": "https://github.com/anjaymi/meowthink-plugins/tree/main/plugins/ai-image-gen",
-      "downloads": 0,
-      "stars": 0
-    },
-    {
-      "id": "meowthink.theme-pack",
-      "name": {
-        "en": "Theme Pack",
-        "zh": "主题包"
-      },
-      "description": {
-        "en": "Additional themes for MeowThink",
-        "zh": "MeowThink 额外主题包"
-      },
-      "version": "1.0.0",
-      "author": "MeowThink",
-      "icon": "palette",
-      "category": "theme",
-      "tags": ["theme", "ui", "style"],
-      "repo": "anjaymi/meowthink-plugins",
-      "branch": "main",
-      "path": "plugins/theme-pack",
-      "homepage": "https://github.com/anjaymi/meowthink-plugins/tree/main/plugins/theme-pack",  
-      "downloads": 0,
-      "stars": 0
-    }
-  ]
+﻿{
+    "updatedAt":  "2025-12-27T15:51:42Z",
+    "version":  "1.0.0",
+    "plugins":  [
+                    {
+                        "id":  "meowthink.ai-image-gen",
+                        "category":  "productivity",
+                        "stars":  0,
+                        "path":  "plugins/ai-image-gen",
+                        "downloads":  0,
+                        "tags":  {
+
+                                 },
+                        "name":  {
+                                     "en":  "AI Image Generation",
+                                     "zh":  "AI 生图"
+                                 },
+                        "branch":  "main",
+                        "description":  {
+                                            "en":  "Generate images using AI models (Gemini, SiliconFlow, OpenRouter, Volcano)",
+                                            "zh":  "使用 AI 模型生成图片（支持 Gemini、硅基流动、OpenRouter、火山引擎）"
+                                        },
+                        "version":  "1.0.0",
+                        "author":  "MeowThink",
+                        "repo":  "anjaymi/meowthink-plugins",
+                        "icon":  "sparkles",
+                        "homepage":  "https://github.com/anjaymi/meowthink-plugins/tree/main/plugins/ai-image-gen",
+                        "updatedAt":  "2025-12-27T15:51:42Z"
+                    }
+                ]
 }

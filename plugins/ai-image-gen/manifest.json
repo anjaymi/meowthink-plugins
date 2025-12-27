@@ -1,0 +1,90 @@
+{
+  "id": "meowthink.ai-image-gen",
+  "name": {
+    "en": "AI Image Generation",
+    "zh": "AI 生图"
+  },
+  "version": "1.0.0",
+  "description": {
+    "en": "Generate images using AI models (Gemini, SiliconFlow, OpenRouter, Volcano)",
+    "zh": "使用 AI 模型生成图片（支持 Gemini、硅基流动、OpenRouter、火山引擎）"
+  },
+  "usage": {
+    "en": "1. Configure API Key in extension settings\n2. Right-click on canvas -> 'AI Generate Image'\n3. Or right-click on a node -> 'Generate Image' to use node text as prompt",
+    "zh": "1. 在扩展设置中配置 API Key\n2. 右键画布 -> 'AI 生成图片'\n3. 或右键节点 -> '生成图片' 使用节点文本作为提示词"
+  },
+  "author": "MeowThink",
+  "homepage": "https://github.com/anjaymi/meowthink-plugins",
+  "icon": "sparkles",
+  "category": "productivity",
+  "main": "index.ts",
+  "activationEvents": ["*"],
+  "contributes": {
+    "commands": [
+      {
+        "command": "generateImage",
+        "title": { "en": "Generate Image", "zh": "生成图片" },
+        "icon": "sparkles"
+      },
+      {
+        "command": "generateFromNode",
+        "title": { "en": "Generate Image from Node", "zh": "从节点生成图片" },
+        "icon": "image"
+      },
+      {
+        "command": "configureModel",
+        "title": { "en": "Configure Image Model", "zh": "配置图像模型" },
+        "icon": "settings"
+      }
+    ],
+    "menus": [
+      {
+        "command": "generateFromNode",
+        "location": "context.node",
+        "order": 80
+      },
+      {
+        "command": "generateImage",
+        "location": "context.canvas",
+        "order": 60
+      }
+    ],
+    "settings": [
+      {
+        "id": "provider",
+        "title": { "en": "Provider", "zh": "服务商" },
+        "type": "select",
+        "default": "siliconflow",
+        "options": [
+          { "value": "gemini", "label": { "en": "Google Gemini", "zh": "Google Gemini" } },
+          { "value": "siliconflow", "label": { "en": "SiliconFlow", "zh": "硅基流动" } },
+          { "value": "openrouter", "label": { "en": "OpenRouter", "zh": "OpenRouter" } },
+          { "value": "volcano", "label": { "en": "Volcano (Doubao)", "zh": "火山引擎 (豆包)" } },
+          { "value": "custom", "label": { "en": "Custom", "zh": "自定义" } }
+        ]
+      },
+      {
+        "id": "model",
+        "title": { "en": "Model", "zh": "模型" },
+        "type": "string",
+        "default": "black-forest-labs/FLUX.1-schnell"
+      },
+      {
+        "id": "apiKey",
+        "title": { "en": "API Key", "zh": "API Key" },
+        "type": "string",
+        "default": ""
+      },
+      {
+        "id": "endpoint",
+        "title": { "en": "API Endpoint", "zh": "API 端点" },
+        "type": "string",
+        "default": "https://api.siliconflow.cn/v1/images/generations"
+      }
+    ]
+  },
+  "permissions": ["nodes", "storage", "network"],
+  "engines": {
+    "meowthink": ">=0.56.0"
+  }
+}
