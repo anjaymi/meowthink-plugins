@@ -16,7 +16,7 @@
       "author": "MeowThink",
       "icon": "sparkles",
       "category": "productivity",
-      "tags": {},
+      "tags": ["ai", "image", "generation"],
       "stars": 0,
       "downloads": 0,
       "repo": "anjaymi/meowthink-plugins",
@@ -39,12 +39,7 @@
       "author": "MeowThink",
       "icon": "image",
       "category": "productivity",
-      "tags": {
-        "reference": true,
-        "artstation": true,
-        "pinterest": true,
-        "color-palette": true
-      },
+      "tags": ["reference", "artstation", "pinterest", "color-palette"],
       "stars": 0,
       "downloads": 0,
       "repo": "anjaymi/meowthink-plugins",
