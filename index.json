@@ -1,31 +1,57 @@
 ﻿{
-    "updatedAt":  "2025-12-27T22:57:19Z",
-    "version":  "1.0.0",
-    "plugins":  [
-                    {
-                        "id":  "meowthink.ai-image-gen",
-                        "category":  "productivity",
-                        "stars":  0,
-                        "path":  "plugins/ai-image-gen",
-                        "downloads":  0,
-                        "tags":  {
-
-                                 },
-                        "name":  {
-                                     "en":  "AI Image Generation",
-                                     "zh":  "AI 生图"
-                                 },
-                        "branch":  "main",
-                        "description":  {
-                                            "en":  "Generate images using AI models with multi-model support (Gemini, SiliconFlow, OpenRouter, Volcano)",
-                                            "zh":  "使用 AI 模型生成图片，支持多模型配置（Gemini、硅基流动、OpenRouter、火山引擎）"
-                                        },
-                        "version":  "1.1.0",
-                        "author":  "MeowThink",
-                        "repo":  "anjaymi/meowthink-plugins",
-                        "icon":  "sparkles",
-                        "homepage":  "https://github.com/anjaymi/meowthink-plugins/tree/main/plugins/ai-image-gen",
-                        "updatedAt":  "2025-12-27T22:57:19Z"
-                    }
-                ]
+  "version": "1.0.0",
+  "updatedAt": "2025-12-29T12:00:00Z",
+  "plugins": [
+    {
+      "id": "meowthink.ai-image-gen",
+      "name": {
+        "en": "AI Image Generation",
+        "zh": "AI 生图"
+      },
+      "version": "1.1.0",
+      "description": {
+        "en": "Generate images using AI models with multi-model support (Gemini, SiliconFlow, OpenRouter, Volcano)",
+        "zh": "使用 AI 模型生成图片，支持多模型配置（Gemini、硅基流动、OpenRouter、火山引擎）"
+      },
+      "author": "MeowThink",
+      "icon": "sparkles",
+      "category": "productivity",
+      "tags": {},
+      "stars": 0,
+      "downloads": 0,
+      "repo": "anjaymi/meowthink-plugins",
+      "branch": "main",
+      "path": "plugins/ai-image-gen",
+      "homepage": "https://github.com/anjaymi/meowthink-plugins/tree/main/plugins/ai-image-gen",
+      "updatedAt": "2025-12-27T22:57:19Z"
+    },
+    {
+      "id": "meowthink.reference-collector",
+      "name": {
+        "en": "Reference Collector",
+        "zh": "参考素材采集器"
+      },
+      "version": "1.0.0",
+      "description": {
+        "en": "Search and collect reference images from ArtStation/Pinterest, extract color palettes, and add to projects",
+        "zh": "从 ArtStation/Pinterest 搜索采集参考图，提取配色方案，添加到项目节点"
+      },
+      "author": "MeowThink",
+      "icon": "image",
+      "category": "productivity",
+      "tags": {
+        "reference": true,
+        "artstation": true,
+        "pinterest": true,
+        "color-palette": true
+      },
+      "stars": 0,
+      "downloads": 0,
+      "repo": "anjaymi/meowthink-plugins",
+      "branch": "main",
+      "path": "plugins/reference-collector",
+      "homepage": "https://github.com/anjaymi/meowthink-plugins/tree/main/plugins/reference-collector",
+      "updatedAt": "2025-12-29T12:00:00Z"
+    }
+  ]
 }

@@ -1,0 +1,88 @@
+{
+  "id": "meowthink.reference-collector",
+  "name": {
+    "en": "Reference Collector",
+    "zh": "参考素材采集器"
+  },
+  "version": "1.0.0",
+  "description": {
+    "en": "Search and collect reference images from ArtStation/Pinterest, extract color palettes, and add to projects",
+    "zh": "从 ArtStation/Pinterest 搜索采集参考图，提取配色方案，添加到项目节点"
+  },
+  "usage": {
+    "en": "1. Open Reference Collector panel\n2. Search keywords (supports Chinese auto-translation)\n3. Select target project from dropdown\n4. Click + to add image node, or palette icon to extract colors\n5. Manage image groups for organization",
+    "zh": "1. 打开参考素材面板\n2. 搜索关键词（支持中文自动翻译）\n3. 从下拉菜单选择目标项目\n4. 点击 + 添加图片节点，或调色板图标提取配色\n5. 使用分组管理收藏的素材"
+  },
+  "author": "MeowThink",
+  "homepage": "https://github.com/anjaymi/meowthink-plugins/tree/main/plugins/reference-collector",
+  "icon": "image",
+  "category": "productivity",
+  "main": "index.ts",
+  "activationEvents": ["*"],
+  "contributes": {
+    "commands": [
+      {
+        "command": "openReferencePanel",
+        "title": { "en": "Open Reference Collector", "zh": "打开参考素材" },
+        "icon": "image"
+      },
+      {
+        "command": "searchReferences",
+        "title": { "en": "Search References", "zh": "搜索参考图" },
+        "icon": "search"
+      },
+      {
+        "command": "extractColors",
+        "title": { "en": "Extract Color Palette", "zh": "提取配色方案" },
+        "icon": "palette"
+      }
+    ],
+    "menus": [
+      {
+        "command": "extractColors",
+        "location": "context.canvas",
+        "order": 60
+      }
+    ],
+    "sidebarPanels": [
+      {
+        "id": "referencePanel",
+        "title": { "en": "References", "zh": "参考素材" },
+        "icon": "image",
+        "component": "ReferencePanel"
+      }
+    ],
+    "settings": [
+      {
+        "id": "defaultSource",
+        "title": { "en": "Default Search Source", "zh": "默认搜索来源" },
+        "type": "select",
+        "default": "artstation",
+        "options": [
+          { "value": "artstation", "label": { "en": "ArtStation", "zh": "ArtStation" } },
+          { "value": "pinterest", "label": { "en": "Pinterest", "zh": "Pinterest" } },
+          { "value": "all", "label": { "en": "All Sources", "zh": "全部来源" } }
+        ]
+      },
+      {
+        "id": "pinterestCookie",
+        "title": { "en": "Pinterest Cookie", "zh": "Pinterest Cookie" },
+        "type": "string",
+        "default": "",
+        "description": { "en": "Required for Pinterest search", "zh": "Pinterest 搜索需要配置" }
+      },
+      {
+        "id": "colorCount",
+        "title": { "en": "Colors to Extract", "zh": "提取颜色数量" },
+        "type": "number",
+        "default": 5,
+        "min": 3,
+        "max": 10
+      }
+    ]
+  },
+  "permissions": ["nodes", "storage", "network"],
+  "engines": {
+    "meowthink": ">=0.56.0"
+  }
+}
