@@ -4,7 +4,7 @@
     "en": "Wiki Gallery Database",
     "zh": "Wiki立绘数据库"
   },
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": {
     "en": "Extract and manage character artwork from game wikis with database support, filtering, and batch operations",
     "zh": "从游戏Wiki提取角色立绘，支持数据库管理、筛选过滤、批量操作"
