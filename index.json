@@ -1,12 +1,11 @@
 ﻿{
-    "updatedAt":  "2026-01-02T00:10:37Z",
-    "version":  "1.1.0",
+    "updatedAt":  "2026-01-02T00:22:30Z",
+    "version":  "1.2.0",
     "plugins":  [
                     {
                         "id":  "meowthink.ai-character-workshop",
                         "category":  "productivity",
                         "stars":  0,
-                        "path":  "plugins/ai-character-workshop",
                         "downloads":  0,
                         "tags":  {
 
@@ -15,6 +14,7 @@
                                      "en":  "AI Character Workshop",
                                      "zh":  "AI 角色工坊"
                                  },
+                        "downloadUrl":  "https://github.com/anjaymi/meowthink-plugins/raw/main/plugins/ai-character-workshop-v1.0.0.zip",
                         "branch":  "main",
                         "description":  {
                                             "en":  "Comprehensive AI-powered character creation tool with wizard mode, version management, and PDF export",
@@ -24,14 +24,13 @@
                         "author":  "MeowThink",
                         "repo":  "anjaymi/meowthink-plugins",
                         "icon":  "🎭",
-                        "homepage":  "https://github.com/anjaymi/meowthink-plugins/tree/main/plugins/ai-character-workshop",
-                        "updatedAt":  "2026-01-02T00:10:37Z"
+                        "homepage":  "https://github.com/anjaymi/meowthink-plugins",
+                        "updatedAt":  "2026-01-02T00:22:30Z"
                     },
                     {
                         "id":  "meowthink.ai-image-gen",
                         "category":  "productivity",
                         "stars":  0,
-                        "path":  "plugins/ai-image-gen",
                         "downloads":  0,
                         "tags":  {
 
@@ -40,6 +39,7 @@
                                      "en":  "AI Image Generation",
                                      "zh":  "AI 生图"
                                  },
+                        "downloadUrl":  "https://github.com/anjaymi/meowthink-plugins/raw/main/plugins/ai-image-gen-v2.0.0.zip",
                         "branch":  "main",
                         "description":  {
                                             "en":  "Generate images using AI models (Gemini, SiliconFlow, OpenRouter) with history management and batch generation",
@@ -49,14 +49,13 @@
                         "author":  "MeowThink",
                         "repo":  "anjaymi/meowthink-plugins",
                         "icon":  "sparkles",
-                        "homepage":  "https://github.com/anjaymi/meowthink-plugins/tree/main/plugins/ai-image-gen",
-                        "updatedAt":  "2026-01-02T00:10:37Z"
+                        "homepage":  "https://github.com/anjaymi/meowthink-plugins",
+                        "updatedAt":  "2026-01-02T00:22:30Z"
                     },
                     {
                         "id":  "meowthink.character-fusion",
                         "category":  "productivity",
                         "stars":  0,
-                        "path":  "plugins/character-fusion",
                         "downloads":  0,
                         "tags":  {
 
@@ -65,6 +64,7 @@
                                      "en":  "Character Fusion Generator",
                                      "zh":  "角色融合生成器"
                                  },
+                        "downloadUrl":  "https://github.com/anjaymi/meowthink-plugins/raw/main/plugins/character-fusion-v1.0.0.zip",
                         "branch":  "main",
                         "description":  {
                                             "en":  "Browse built-in character library, fuse characters using AI, and export to mindmap nodes",
@@ -74,14 +74,13 @@
                         "author":  "MeowThink",
                         "repo":  "anjaymi/meowthink-plugins",
                         "icon":  "users",
-                        "homepage":  "https://github.com/anjaymi/meowthink-plugins/tree/main/plugins/character-fusion",
-                        "updatedAt":  "2026-01-02T00:10:37Z"
+                        "homepage":  "https://github.com/anjaymi/meowthink-plugins",
+                        "updatedAt":  "2026-01-02T00:22:30Z"
                     },
                     {
                         "id":  "meowthink.pose-reference",
                         "category":  "productivity",
                         "stars":  0,
-                        "path":  "plugins/pose-reference",
                         "downloads":  0,
                         "tags":  {
 
@@ -90,6 +89,7 @@
                                      "en":  "Pose Reference Library",
                                      "zh":  "姿势参考库"
                                  },
+                        "downloadUrl":  "https://github.com/anjaymi/meowthink-plugins/raw/main/plugins/pose-reference-v1.0.0.zip",
                         "branch":  "main",
                         "description":  {
                                             "en":  "Browse and collect pose references for character design. Supports multiple categories and quick canvas placement.",
@@ -99,14 +99,13 @@
                         "author":  "MeowThink",
                         "repo":  "anjaymi/meowthink-plugins",
                         "icon":  "person-standing",
-                        "homepage":  "https://github.com/anjaymi/meowthink-plugins/tree/main/plugins/pose-reference",
-                        "updatedAt":  "2026-01-02T00:10:37Z"
+                        "homepage":  "https://github.com/anjaymi/meowthink-plugins",
+                        "updatedAt":  "2026-01-02T00:22:30Z"
                     },
                     {
                         "id":  "meowthink.reference-collector",
                         "category":  "productivity",
                         "stars":  0,
-                        "path":  "plugins/reference-collector",
                         "downloads":  0,
                         "tags":  {
 
@@ -115,6 +114,7 @@
                                      "en":  "Reference Collector",
                                      "zh":  "参考素材采集器"
                                  },
+                        "downloadUrl":  "https://github.com/anjaymi/meowthink-plugins/raw/main/plugins/reference-collector-v1.0.0.zip",
                         "branch":  "main",
                         "description":  {
                                             "en":  "Search and collect reference images from ArtStation/Pinterest, extract color palettes, and add to projects",
@@ -124,14 +124,13 @@
                         "author":  "MeowThink",
                         "repo":  "anjaymi/meowthink-plugins",
                         "icon":  "image",
-                        "homepage":  "https://github.com/anjaymi/meowthink-plugins/tree/main/plugins/reference-collector",
-                        "updatedAt":  "2026-01-02T00:10:37Z"
+                        "homepage":  "https://github.com/anjaymi/meowthink-plugins",
+                        "updatedAt":  "2026-01-02T00:22:30Z"
                     },
                     {
                         "id":  "meowthink.wiki-gallery-scraper",
                         "category":  "productivity",
                         "stars":  0,
-                        "path":  "plugins/wiki-gallery-scraper",
                         "downloads":  0,
                         "tags":  {
 
@@ -140,6 +139,7 @@
                                      "en":  "Wiki Gallery Database",
                                      "zh":  "Wiki立绘数据库"
                                  },
+                        "downloadUrl":  "https://github.com/anjaymi/meowthink-plugins/raw/main/plugins/wiki-gallery-scraper-v2.1.0.zip",
                         "branch":  "main",
                         "description":  {
                                             "en":  "Extract and manage character artwork from game wikis with database support, filtering, and batch operations",
@@ -149,8 +149,8 @@
                         "author":  "MeowThink",
                         "repo":  "anjaymi/meowthink-plugins",
                         "icon":  "database",
-                        "homepage":  "https://github.com/anjaymi/meowthink-plugins/tree/main/plugins/wiki-gallery-scraper",
-                        "updatedAt":  "2026-01-02T00:10:37Z"
+                        "homepage":  "https://github.com/anjaymi/meowthink-plugins",
+                        "updatedAt":  "2026-01-02T00:22:30Z"
                     }
                 ]
 }
