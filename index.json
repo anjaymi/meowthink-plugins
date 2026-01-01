@@ -1,156 +1,108 @@
-﻿{
-    "updatedAt":  "2026-01-02T00:22:30Z",
-    "version":  "1.2.0",
-    "plugins":  [
-                    {
-                        "id":  "meowthink.ai-character-workshop",
-                        "category":  "productivity",
-                        "stars":  0,
-                        "downloads":  0,
-                        "tags":  {
-
-                                 },
-                        "name":  {
-                                     "en":  "AI Character Workshop",
-                                     "zh":  "AI 角色工坊"
-                                 },
-                        "downloadUrl":  "https://github.com/anjaymi/meowthink-plugins/raw/main/plugins/ai-character-workshop-v1.0.0.zip",
-                        "branch":  "main",
-                        "description":  {
-                                            "en":  "Comprehensive AI-powered character creation tool with wizard mode, version management, and PDF export",
-                                            "zh":  "综合性 AI 角色创建工具，支持向导模式、版本管理和 PDF 导出"
-                                        },
-                        "version":  "1.0.0",
-                        "author":  "MeowThink",
-                        "repo":  "anjaymi/meowthink-plugins",
-                        "icon":  "🎭",
-                        "homepage":  "https://github.com/anjaymi/meowthink-plugins",
-                        "updatedAt":  "2026-01-02T00:22:30Z"
-                    },
-                    {
-                        "id":  "meowthink.ai-image-gen",
-                        "category":  "productivity",
-                        "stars":  0,
-                        "downloads":  0,
-                        "tags":  {
-
-                                 },
-                        "name":  {
-                                     "en":  "AI Image Generation",
-                                     "zh":  "AI 生图"
-                                 },
-                        "downloadUrl":  "https://github.com/anjaymi/meowthink-plugins/raw/main/plugins/ai-image-gen-v2.0.0.zip",
-                        "branch":  "main",
-                        "description":  {
-                                            "en":  "Generate images using AI models (Gemini, SiliconFlow, OpenRouter) with history management and batch generation",
-                                            "zh":  "使用 AI 模型生成图片（Gemini、硅基流动、OpenRouter），支持历史管理和批量生成"
-                                        },
-                        "version":  "2.0.0",
-                        "author":  "MeowThink",
-                        "repo":  "anjaymi/meowthink-plugins",
-                        "icon":  "sparkles",
-                        "homepage":  "https://github.com/anjaymi/meowthink-plugins",
-                        "updatedAt":  "2026-01-02T00:22:30Z"
-                    },
-                    {
-                        "id":  "meowthink.character-fusion",
-                        "category":  "productivity",
-                        "stars":  0,
-                        "downloads":  0,
-                        "tags":  {
-
-                                 },
-                        "name":  {
-                                     "en":  "Character Fusion Generator",
-                                     "zh":  "角色融合生成器"
-                                 },
-                        "downloadUrl":  "https://github.com/anjaymi/meowthink-plugins/raw/main/plugins/character-fusion-v1.0.0.zip",
-                        "branch":  "main",
-                        "description":  {
-                                            "en":  "Browse built-in character library, fuse characters using AI, and export to mindmap nodes",
-                                            "zh":  "浏览内置角色库，使用 AI 融合角色，导出为思维导图节点"
-                                        },
-                        "version":  "1.0.0",
-                        "author":  "MeowThink",
-                        "repo":  "anjaymi/meowthink-plugins",
-                        "icon":  "users",
-                        "homepage":  "https://github.com/anjaymi/meowthink-plugins",
-                        "updatedAt":  "2026-01-02T00:22:30Z"
-                    },
-                    {
-                        "id":  "meowthink.pose-reference",
-                        "category":  "productivity",
-                        "stars":  0,
-                        "downloads":  0,
-                        "tags":  {
-
-                                 },
-                        "name":  {
-                                     "en":  "Pose Reference Library",
-                                     "zh":  "姿势参考库"
-                                 },
-                        "downloadUrl":  "https://github.com/anjaymi/meowthink-plugins/raw/main/plugins/pose-reference-v1.0.0.zip",
-                        "branch":  "main",
-                        "description":  {
-                                            "en":  "Browse and collect pose references for character design. Supports multiple categories and quick canvas placement.",
-                                            "zh":  "浏览和收集角色设计姿势参考图。支持多种分类，可快速添加到画布。"
-                                        },
-                        "version":  "1.0.0",
-                        "author":  "MeowThink",
-                        "repo":  "anjaymi/meowthink-plugins",
-                        "icon":  "person-standing",
-                        "homepage":  "https://github.com/anjaymi/meowthink-plugins",
-                        "updatedAt":  "2026-01-02T00:22:30Z"
-                    },
-                    {
-                        "id":  "meowthink.reference-collector",
-                        "category":  "productivity",
-                        "stars":  0,
-                        "downloads":  0,
-                        "tags":  {
-
-                                 },
-                        "name":  {
-                                     "en":  "Reference Collector",
-                                     "zh":  "参考素材采集器"
-                                 },
-                        "downloadUrl":  "https://github.com/anjaymi/meowthink-plugins/raw/main/plugins/reference-collector-v1.0.0.zip",
-                        "branch":  "main",
-                        "description":  {
-                                            "en":  "Search and collect reference images from ArtStation/Pinterest, extract color palettes, and add to projects",
-                                            "zh":  "从 ArtStation/Pinterest 搜索采集参考图，提取配色方案，添加到项目节点"
-                                        },
-                        "version":  "1.0.0",
-                        "author":  "MeowThink",
-                        "repo":  "anjaymi/meowthink-plugins",
-                        "icon":  "image",
-                        "homepage":  "https://github.com/anjaymi/meowthink-plugins",
-                        "updatedAt":  "2026-01-02T00:22:30Z"
-                    },
-                    {
-                        "id":  "meowthink.wiki-gallery-scraper",
-                        "category":  "productivity",
-                        "stars":  0,
-                        "downloads":  0,
-                        "tags":  {
-
-                                 },
-                        "name":  {
-                                     "en":  "Wiki Gallery Database",
-                                     "zh":  "Wiki立绘数据库"
-                                 },
-                        "downloadUrl":  "https://github.com/anjaymi/meowthink-plugins/raw/main/plugins/wiki-gallery-scraper-v2.1.0.zip",
-                        "branch":  "main",
-                        "description":  {
-                                            "en":  "Extract and manage character artwork from game wikis with database support, filtering, and batch operations",
-                                            "zh":  "从游戏Wiki提取角色立绘，支持数据库管理、筛选过滤、批量操作"
-                                        },
-                        "version":  "2.1.0",
-                        "author":  "MeowThink",
-                        "repo":  "anjaymi/meowthink-plugins",
-                        "icon":  "database",
-                        "homepage":  "https://github.com/anjaymi/meowthink-plugins",
-                        "updatedAt":  "2026-01-02T00:22:30Z"
-                    }
-                ]
+{
+  "version": "1.1.0",
+  "updatedAt": "2026-01-01T00:00:00.000Z",
+  "plugins": [
+    {
+      "id": "meowthink.ai-image-gen",
+      "name": { "en": "AI Image Generation", "zh": "AI 生图" },
+      "description": {
+        "en": "Generate images using AI models (Gemini, SiliconFlow, OpenRouter)",
+        "zh": "使用 AI 模型生成图片（支持 Gemini、硅基流动、OpenRouter）"
+      },
+      "version": "1.1.0",
+      "author": "MeowThink",
+      "icon": "sparkles",
+      "category": "productivity",
+      "tags": ["ai", "image", "generation"],
+      "repo": "anjaymi/meowthink-plugins",
+      "path": "plugins/ai-image-gen",
+      "downloads": 0,
+      "stars": 0
+    },
+    {
+      "id": "meowthink.reference-collector",
+      "name": { "en": "Reference Collector", "zh": "参考素材采集器" },
+      "description": {
+        "en": "Search and collect reference images from ArtStation/Pinterest",
+        "zh": "从 ArtStation/Pinterest 搜索采集参考图，提取配色方案"
+      },
+      "version": "1.0.0",
+      "author": "MeowThink",
+      "icon": "image",
+      "category": "productivity",
+      "tags": ["reference", "artstation", "pinterest"],
+      "repo": "anjaymi/meowthink-plugins",
+      "path": "plugins/reference-collector",
+      "downloads": 0,
+      "stars": 0
+    },
+    {
+      "id": "meowthink.ai-character-workshop",
+      "name": { "en": "AI Character Workshop", "zh": "AI 角色工坊" },
+      "description": {
+        "en": "Comprehensive AI character creation tool with wizard mode, version management, and PDF export",
+        "zh": "综合性 AI 角色创建工具，支持向导模式、版本管理和 PDF 导出"
+      },
+      "version": "1.0.0",
+      "author": "MeowThink",
+      "icon": "🎭",
+      "category": "productivity",
+      "tags": ["ai", "character", "creation", "wizard", "pdf"],
+      "repo": "anjaymi/meowthink-plugins",
+      "path": "plugins/ai-character-workshop",
+      "downloads": 0,
+      "stars": 0
+    },
+    {
+      "id": "meowthink.pose-reference",
+      "name": { "en": "Pose Reference", "zh": "姿势参考" },
+      "description": {
+        "en": "Browse and search pose references with pagination, Pinterest login sync",
+        "zh": "姿势参考搜索，支持分页换一批、Pinterest登录同步"
+      },
+      "version": "1.1.0",
+      "author": "MeowThink",
+      "icon": "🧘",
+      "category": "productivity",
+      "tags": ["pose", "reference", "drawing", "pinterest"],
+      "repo": "anjaymi/meowthink-plugins",
+      "path": "plugins/pose-reference",
+      "downloads": 0,
+      "stars": 0
+    },
+    {
+      "id": "meowthink.wiki-gallery-scraper",
+      "name": { "en": "Wiki Gallery Database", "zh": "Wiki立绘数据库" },
+      "description": {
+        "en": "Extract and manage character artwork from game wikis with database support, filtering, and batch operations",
+        "zh": "从游戏Wiki提取角色立绘，支持数据库管理、筛选过滤、批量操作"
+      },
+      "version": "2.1.0",
+      "author": "MeowThink",
+      "icon": "database",
+      "category": "productivity",
+      "tags": ["wiki", "gallery", "database", "character", "artwork"],
+      "repo": "anjaymi/meowthink-plugins",
+      "path": "plugins/wiki-gallery-scraper",
+      "downloads": 0,
+      "stars": 0
+    },
+    {
+      "id": "meowthink.character-fusion",
+      "name": { "en": "Character Fusion", "zh": "角色融合" },
+      "description": {
+        "en": "Fuse multiple characters to create new character concepts",
+        "zh": "融合多个角色创建新的角色概念"
+      },
+      "version": "1.0.0",
+      "author": "MeowThink",
+      "icon": "🔀",
+      "category": "productivity",
+      "tags": ["character", "fusion", "ai", "creation"],
+      "repo": "anjaymi/meowthink-plugins",
+      "path": "plugins/character-fusion",
+      "downloads": 0,
+      "stars": 0
+    }
+  ]
 }

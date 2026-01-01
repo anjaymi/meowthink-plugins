@@ -1,0 +1,79 @@
+{
+  "id": "meowthink.wiki-gallery-scraper",
+  "name": {
+    "en": "Wiki Gallery Database",
+    "zh": "Wiki立绘数据库"
+  },
+  "version": "2.1.0",
+  "description": {
+    "en": "Extract and manage character artwork from game wikis with database support, filtering, and batch operations",
+    "zh": "从游戏Wiki提取角色立绘，支持数据库管理、筛选过滤、批量操作"
+  },
+  "usage": {
+    "en": "1. Open Wiki Gallery Database panel\n2. Add data sources (BWiki, HuijiWiki)\n3. Extract character artworks with progress tracking\n4. Filter by game, rarity, element, etc.\n5. Batch download or add to canvas\n6. Import/Export database",
+    "zh": "1. 打开Wiki立绘数据库面板\n2. 添加数据源（BWiki、灰机Wiki）\n3. 提取角色立绘，支持进度追踪\n4. 按游戏、稀有度、元素等筛选\n5. 批量下载或添加到画布\n6. 导入/导出数据库"
+  },
+  "author": "MeowThink",
+  "homepage": "https://github.com/anjaymi/meowthink-plugins",
+  "icon": "database",
+  "category": "productivity",
+  "main": "index.ts",
+  "activationEvents": ["*"],
+  "contributes": {
+    "commands": [
+      {
+        "command": "openWikiGalleryDatabase",
+        "title": { "en": "Open Wiki Gallery Database", "zh": "打开Wiki立绘数据库" },
+        "icon": "database"
+      },
+      {
+        "command": "addSource",
+        "title": { "en": "Add Data Source", "zh": "添加数据源" },
+        "icon": "plus"
+      }
+    ],
+    "menus": [
+      {
+        "command": "openWikiGalleryDatabase",
+        "location": "sidebar.tools",
+        "order": 35
+      }
+    ],
+    "settings": [
+      {
+        "id": "defaultGame",
+        "title": { "en": "Default Game", "zh": "默认游戏" },
+        "type": "select",
+        "default": "re1999",
+        "options": [
+          { "value": "re1999", "label": { "en": "Reverse: 1999", "zh": "重返未来1999" } },
+          { "value": "arknights", "label": { "en": "Arknights", "zh": "明日方舟" } },
+          { "value": "genshin", "label": { "en": "Genshin Impact", "zh": "原神" } },
+          { "value": "starrail", "label": { "en": "Honkai: Star Rail", "zh": "崩坏：星穹铁道" } },
+          { "value": "zzz", "label": { "en": "Zenless Zone Zero", "zh": "绝区零" } }
+        ]
+      },
+      {
+        "id": "imageQuality",
+        "title": { "en": "Image Quality", "zh": "图片质量" },
+        "type": "select",
+        "default": "high",
+        "options": [
+          { "value": "thumb", "label": { "en": "Thumbnail", "zh": "缩略图" } },
+          { "value": "medium", "label": { "en": "Medium", "zh": "中等" } },
+          { "value": "high", "label": { "en": "High", "zh": "高清" } }
+        ]
+      },
+      {
+        "id": "autoAddToCanvas",
+        "title": { "en": "Auto Add to Canvas", "zh": "自动添加到画布" },
+        "type": "boolean",
+        "default": false
+      }
+    ]
+  },
+  "permissions": ["nodes", "storage", "network"],
+  "engines": {
+    "meowthink": ">=0.56.0"
+  }
+}

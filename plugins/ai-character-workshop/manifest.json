@@ -1,0 +1,102 @@
+{
+  "id": "meowthink.ai-character-workshop",
+  "name": {
+    "en": "AI Character Workshop",
+    "zh": "AI 角色工坊"
+  },
+  "version": "1.0.0",
+  "description": {
+    "en": "Comprehensive AI-powered character creation tool with wizard mode, version management, and PDF export",
+    "zh": "综合性 AI 角色创建工具，支持向导模式、版本管理和 PDF 导出"
+  },
+  "usage": {
+    "en": "1. Open AI Character Workshop from sidebar\n2. Choose wizard or free mode\n3. Set style, name, tags, appearance, personality, backstory\n4. Generate character agent for chat\n5. Export as PDF/JSON/Markdown",
+    "zh": "1. 从侧边栏打开 AI 角色工坊\n2. 选择向导模式或自由模式\n3. 设定风格、名字、标签、外观、性格、背景\n4. 生成角色智能体用于对话\n5. 导出为 PDF/JSON/Markdown"
+  },
+  "author": "MeowThink",
+  "homepage": "https://github.com/anjaymi/meowthink-plugins",
+  "icon": "🎭",
+  "category": "productivity",
+  "main": "index.ts",
+  "activationEvents": ["*"],
+  "contributes": {
+    "commands": [
+      {
+        "command": "ai-character-workshop.open",
+        "title": { "en": "Open AI Character Workshop", "zh": "打开 AI 角色工坊" },
+        "icon": "🎭"
+      },
+      {
+        "command": "ai-character-workshop.openWizard",
+        "title": { "en": "Create with Wizard", "zh": "向导模式创建角色" },
+        "icon": "✨"
+      },
+      {
+        "command": "ai-character-workshop.openFree",
+        "title": { "en": "Free Mode", "zh": "自由模式" },
+        "icon": "📝"
+      },
+      {
+        "command": "ai-character-workshop.toggleToolbar",
+        "title": { "en": "Toggle Floating Toolbar", "zh": "切换悬浮工具栏" },
+        "icon": "🔧"
+      }
+    ],
+    "menus": [
+      {
+        "command": "ai-character-workshop.open",
+        "location": "context.canvas",
+        "order": 80
+      }
+    ],
+    "settings": [
+      {
+        "id": "defaultMode",
+        "title": { "en": "Default Mode", "zh": "默认模式" },
+        "type": "select",
+        "default": "wizard",
+        "options": [
+          { "value": "wizard", "label": { "en": "Wizard Mode", "zh": "向导模式" } },
+          { "value": "free", "label": { "en": "Free Mode", "zh": "自由模式" } }
+        ]
+      },
+      {
+        "id": "autoSaveVersions",
+        "title": { "en": "Auto Save Versions", "zh": "自动保存版本" },
+        "type": "boolean",
+        "default": true
+      },
+      {
+        "id": "maxVersions",
+        "title": { "en": "Max Versions", "zh": "最大版本数" },
+        "type": "number",
+        "default": 10
+      },
+      {
+        "id": "defaultPdfTemplate",
+        "title": { "en": "Default PDF Template", "zh": "默认 PDF 模板" },
+        "type": "select",
+        "default": "standard",
+        "options": [
+          { "value": "standard", "label": { "en": "Standard", "zh": "标准版" } },
+          { "value": "detailed", "label": { "en": "Detailed", "zh": "详细版" } },
+          { "value": "minimal", "label": { "en": "Minimal", "zh": "简洁版" } }
+        ]
+      },
+      {
+        "id": "showFloatingToolbar",
+        "title": { "en": "Show Floating Toolbar", "zh": "显示悬浮工具栏" },
+        "type": "boolean",
+        "default": true
+      }
+    ]
+  },
+  "optionalDependencies": {
+    "meowthink.character-fusion": ">=1.0.0",
+    "meowthink.ai-image-gen": ">=1.0.0"
+  },
+  "permissions": ["nodes", "storage", "network"],
+  "engines": {
+    "meowthink": ">=0.6.0"
+  }
+}
