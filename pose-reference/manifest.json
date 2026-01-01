@@ -1,0 +1,98 @@
+{
+  "id": "meowthink.pose-reference",
+  "name": {
+    "en": "Pose Reference Library",
+    "zh": "姿势参考库"
+  },
+  "version": "1.0.0",
+  "description": {
+    "en": "Browse and collect pose references for character design. Supports multiple categories and quick canvas placement.",
+    "zh": "浏览和收集角色设计姿势参考图。支持多种分类，可快速添加到画布。"
+  },
+  "usage": {
+    "en": "1. Open Pose Reference panel from sidebar\n2. Browse by category (Standing, Sitting, Action, etc.)\n3. Click image to preview, double-click to add to canvas\n4. Use timer mode for timed drawing practice\n5. Favorite poses for quick access",
+    "zh": "1. 从侧边栏打开姿势参考面板\n2. 按分类浏览（站姿、坐姿、动态等）\n3. 单击预览，双击添加到画布\n4. 使用计时模式进行限时练习\n5. 收藏常用姿势快速访问"
+  },
+  "author": "MeowThink",
+  "homepage": "https://github.com/anjaymi/meowthink-plugins",
+  "icon": "person-standing",
+  "category": "productivity",
+  "main": "index.ts",
+  "activationEvents": ["*"],
+  "contributes": {
+    "commands": [
+      {
+        "command": "openPosePanel",
+        "title": { "en": "Open Pose Reference", "zh": "打开姿势参考" },
+        "icon": "person-standing"
+      },
+      {
+        "command": "randomPose",
+        "title": { "en": "Random Pose", "zh": "随机姿势" },
+        "icon": "shuffle"
+      },
+      {
+        "command": "startPractice",
+        "title": { "en": "Start Timed Practice", "zh": "开始限时练习" },
+        "icon": "timer"
+      }
+    ],
+    "menus": [
+      {
+        "command": "openPosePanel",
+        "location": "toolbar.right",
+        "order": 30
+      }
+    ],
+    "sidebarPanels": [
+      {
+        "id": "posePanel",
+        "title": { "en": "Pose Reference", "zh": "姿势参考" },
+        "icon": "person-standing",
+        "component": "PoseReferencePanel"
+      }
+    ],
+    "settings": [
+      {
+        "id": "defaultCategory",
+        "title": { "en": "Default Category", "zh": "默认分类" },
+        "type": "select",
+        "default": "all",
+        "options": [
+          { "value": "all", "label": { "en": "All Poses", "zh": "全部姿势" } },
+          { "value": "standing", "label": { "en": "Standing", "zh": "站姿" } },
+          { "value": "sitting", "label": { "en": "Sitting", "zh": "坐姿" } },
+          { "value": "action", "label": { "en": "Action/Dynamic", "zh": "动态" } },
+          { "value": "lying", "label": { "en": "Lying/Reclining", "zh": "躺卧" } },
+          { "value": "gesture", "label": { "en": "Hand Gestures", "zh": "手势" } }
+        ]
+      },
+      {
+        "id": "practiceTime",
+        "title": { "en": "Practice Timer (seconds)", "zh": "练习计时（秒）" },
+        "type": "number",
+        "default": 60,
+        "min": 15,
+        "max": 300
+      },
+      {
+        "id": "grayscaleMode",
+        "title": { "en": "Grayscale Mode", "zh": "灰度模式" },
+        "type": "boolean",
+        "default": false,
+        "description": { "en": "Display poses in grayscale for form study", "zh": "以灰度显示姿势，专注形体研究" }
+      },
+      {
+        "id": "showSkeleton",
+        "title": { "en": "Show Skeleton Overlay", "zh": "显示骨骼线" },
+        "type": "boolean",
+        "default": false,
+        "description": { "en": "Overlay simplified skeleton on poses", "zh": "在姿势上叠加简化骨骼线" }
+      }
+    ]
+  },
+  "permissions": ["nodes", "storage", "network"],
+  "engines": {
+    "meowthink": ">=0.56.0"
+  }
+}

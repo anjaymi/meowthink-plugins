@@ -1,0 +1,79 @@
+{
+  "id": "meowthink.ai-image-gen",
+  "name": {
+    "en": "AI Image Generation",
+    "zh": "AI 生图"
+  },
+  "version": "2.0.0",
+  "description": {
+    "en": "Generate images using AI models (Gemini, SiliconFlow, OpenRouter) with history management and batch generation",
+    "zh": "使用 AI 模型生成图片（Gemini、硅基流动、OpenRouter），支持历史管理和批量生成"
+  },
+  "usage": {
+    "en": "1. Open AI Image Gen panel\n2. Enter prompt or use tag suggestions\n3. Select model and parameters\n4. Generate images\n5. View history and add to canvas",
+    "zh": "1. 打开AI生图面板\n2. 输入提示词或使用标签建议\n3. 选择模型和参数\n4. 生成图片\n5. 查看历史并添加到画布"
+  },
+  "author": "MeowThink",
+  "homepage": "https://github.com/anjaymi/meowthink-plugins",
+  "icon": "sparkles",
+  "category": "productivity",
+  "main": "index.ts",
+  "activationEvents": ["*"],
+  "contributes": {
+    "commands": [
+      {
+        "command": "openImageGen",
+        "title": { "en": "Open AI Image Gen", "zh": "打开AI生图" },
+        "icon": "sparkles"
+      },
+      {
+        "command": "generateFromSelection",
+        "title": { "en": "Generate from Selection", "zh": "从选中内容生成" },
+        "icon": "wand-2"
+      }
+    ],
+    "menus": [
+      {
+        "command": "openImageGen",
+        "location": "sidebar.ai",
+        "order": 20
+      }
+    ],
+    "settings": [
+      {
+        "id": "defaultProvider",
+        "title": { "en": "Default Provider", "zh": "默认服务商" },
+        "type": "select",
+        "default": "gemini",
+        "options": [
+          { "value": "gemini", "label": { "en": "Google Gemini", "zh": "Google Gemini" } },
+          { "value": "siliconflow", "label": { "en": "SiliconFlow", "zh": "硅基流动" } },
+          { "value": "openrouter", "label": { "en": "OpenRouter", "zh": "OpenRouter" } }
+        ]
+      },
+      {
+        "id": "autoSaveHistory",
+        "title": { "en": "Auto Save History", "zh": "自动保存历史" },
+        "type": "boolean",
+        "default": true
+      },
+      {
+        "id": "defaultSize",
+        "title": { "en": "Default Size", "zh": "默认尺寸" },
+        "type": "select",
+        "default": "1024x1024",
+        "options": [
+          { "value": "512x512", "label": "512x512" },
+          { "value": "768x768", "label": "768x768" },
+          { "value": "1024x1024", "label": "1024x1024" },
+          { "value": "1024x768", "label": "1024x768 (横)" },
+          { "value": "768x1024", "label": "768x1024 (竖)" }
+        ]
+      }
+    ]
+  },
+  "permissions": ["nodes", "storage", "network"],
+  "engines": {
+    "meowthink": ">=0.56.0"
+  }
+}
