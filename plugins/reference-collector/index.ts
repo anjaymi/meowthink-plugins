@@ -84,6 +84,15 @@ const extensionModule: IExtensionModule = {
       },
     });
     
+    // 注册侧边栏面板 - 需要提供 component
+    // 注意：实际的 ReferencePanel 组件需要在应用中单独实现
+    // api.ui.registerSidebarPanel({
+    //   id: 'referencePanel',
+    //   title: api.i18n.getLocale() === 'zh' ? '参考素材' : 'References',
+    //   icon: 'image',
+    //   component: ReferencePanel,
+    // });
+    
     // 注册工具栏按钮
     api.ui.registerToolbarButton({
       id: 'referenceCollectorBtn',

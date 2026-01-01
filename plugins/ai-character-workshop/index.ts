@@ -3,69 +3,90 @@
  * 综合性角色创建工具，支持向导模式和自由模式
  */
 
-import type { ExtensionContext } from '../../../types/extension';
-import { PluginBridge } from './api/pluginBridge';
+import type { IExtensionContext, IExtensionAPI, IExtensionModule } from '../../../types/extension';
 
-export function activate(context: ExtensionContext) {
-  const { ui, commands, storage } = context;
+// 扩展模块
+const extensionModule: IExtensionModule = {
+  activate: async (_context: IExtensionContext, api: IExtensionAPI) => {
+    const locale = api.i18n.getLocale();
+    const isZh = locale === 'zh';
 
-  // 注册命令
-  commands.register('ai-character-workshop.open', () => {
-    window.dispatchEvent(new CustomEvent('meowthink:openCharacterWorkshop'));
-  });
+    // 注册命令：打开角色工坊
+    api.ui.registerCommand({
+      id: 'meowthink.ai-character-workshop.open',
+      title: isZh ? '打开 AI 角色工坊' : 'Open AI Character Workshop',
+      icon: '🎭',
+      handler: () => {
+        window.dispatchEvent(new CustomEvent('meowthink:openCharacterWorkshop'));
+      },
+    });
 
-  commands.register('ai-character-workshop.openWizard', () => {
-    window.dispatchEvent(new CustomEvent('meowthink:openCharacterWorkshop', { detail: { mode: 'wizard' } }));
-  });
+    // 注册命令：向导模式
+    api.ui.registerCommand({
+      id: 'meowthink.ai-character-workshop.openWizard',
+      title: isZh ? '向导模式创建角色' : 'Create with Wizard',
+      icon: '✨',
+      handler: () => {
+        window.dispatchEvent(new CustomEvent('meowthink:openCharacterWorkshop', { detail: { mode: 'wizard' } }));
+      },
+    });
 
-  commands.register('ai-character-workshop.openFree', () => {
-    window.dispatchEvent(new CustomEvent('meowthink:openCharacterWorkshop', { detail: { mode: 'free' } }));
-  });
+    // 注册命令：自由模式
+    api.ui.registerCommand({
+      id: 'meowthink.ai-character-workshop.openFree',
+      title: isZh ? '自由模式' : 'Free Mode',
+      icon: '📝',
+      handler: () => {
+        window.dispatchEvent(new CustomEvent('meowthink:openCharacterWorkshop', { detail: { mode: 'free' } }));
+      },
+    });
 
-  commands.register('ai-character-workshop.toggleToolbar', () => {
-    // 通过事件通知悬浮工具栏切换显示状态
-    window.dispatchEvent(new CustomEvent('workshop-toolbar-toggle'));
-  });
+    // 注册命令：切换悬浮工具栏
+    api.ui.registerCommand({
+      id: 'meowthink.ai-character-workshop.toggleToolbar',
+      title: isZh ? '切换悬浮工具栏' : 'Toggle Floating Toolbar',
+      icon: '🔧',
+      handler: () => {
+        window.dispatchEvent(new CustomEvent('workshop-toolbar-toggle'));
+      },
+    });
 
-  commands.register('ai-character-workshop.showToolbar', () => {
-    window.dispatchEvent(new CustomEvent('workshop-toolbar-show'));
-  });
+    // 注册命令：显示悬浮工具栏
+    api.ui.registerCommand({
+      id: 'meowthink.ai-character-workshop.showToolbar',
+      title: isZh ? '显示悬浮工具栏' : 'Show Floating Toolbar',
+      handler: () => {
+        window.dispatchEvent(new CustomEvent('workshop-toolbar-show'));
+      },
+    });
 
-  commands.register('ai-character-workshop.hideToolbar', () => {
-    window.dispatchEvent(new CustomEvent('workshop-toolbar-hide'));
-  });
+    // 注册命令：隐藏悬浮工具栏
+    api.ui.registerCommand({
+      id: 'meowthink.ai-character-workshop.hideToolbar',
+      title: isZh ? '隐藏悬浮工具栏' : 'Hide Floating Toolbar',
+      handler: () => {
+        window.dispatchEvent(new CustomEvent('workshop-toolbar-hide'));
+      },
+    });
 
-  // 注册侧边栏按钮
-  ui.registerSidebarButton({
-    id: 'ai-character-workshop',
-    icon: '🎭',
-    tooltip: { zh: 'AI 角色工坊', en: 'AI Character Workshop' },
-    onClick: () => commands.execute('ai-character-workshop.open'),
-  });
+    // 注册工具栏按钮
+    api.ui.registerToolbarButton({
+      id: 'aiCharacterWorkshopBtn',
+      title: isZh ? 'AI 角色工坊' : 'AI Character Workshop',
+      icon: '🎭',
+      command: 'meowthink.ai-character-workshop.open',
+      order: 30,
+    });
 
-  // 注册面板
-  ui.registerPanel({
-    id: 'ai-character-workshop',
-    title: { zh: 'AI 角色工坊', en: 'AI Character Workshop' },
-    component: 'WorkshopPanel',
-  });
+    console.log('[AI Character Workshop] 插件已激活');
+  },
 
-  // 注册右键菜单
-  ui.registerContextMenu({
-    id: 'ai-character-workshop-context',
-    label: { zh: 'AI 角色工坊', en: 'AI Character Workshop' },
-    items: [
-      { id: 'wizard', label: { zh: '向导模式创建角色', en: 'Create with Wizard' }, command: 'ai-character-workshop.openWizard' },
-      { id: 'free', label: { zh: '自由模式', en: 'Free Mode' }, command: 'ai-character-workshop.openFree' },
-    ],
-  });
+  deactivate: async () => {
+    console.log('[AI Character Workshop] 插件已停用');
+  },
+};
 
-  console.log('[AI Character Workshop] 插件已激活');
-}
-
-export function deactivate() {
-  console.log('[AI Character Workshop] 插件已停用');
-}
+export default extensionModule;
 
 // 导出组件供面板使用
 export { WorkshopPanel } from './components/WorkshopPanel';

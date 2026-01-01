@@ -1,11 +1,12 @@
 /**
  * AI 角色工坊 - 集成式主面板
  * 所有功能通过顶部标签切换，无需跳转
+ * 支持拖拽移动和调整大小
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useWorkshopState } from '../hooks/useWorkshopState';
-import { useAIGenerate } from '../hooks/useAIGenerate';
+import { useAIGenerate, getAvailableApiConfigs, setOverrideModel } from '../hooks/useAIGenerate';
 import { VersionManager } from './wizard/VersionManager';
 import { StyleTab, BasicTab, AppearanceTab, PersonalityTab, BackstoryTab, AgentTab } from './integrated';
 import type { CharacterData, CharacterInput, NamingOptions, BackstoryOptions, CharacterPersonality, CharacterAgent } from '../types';
@@ -20,15 +21,21 @@ interface TabConfig {
 }
 
 const TABS: TabConfig[] = [
-  { id: 'overview', name: { zh: '总览', en: 'Overview' }, icon: '📋' },
-  { id: 'style', name: { zh: '风格', en: 'Style' }, icon: '🎨' },
-  { id: 'basic', name: { zh: '基础', en: 'Basic' }, icon: '🏷️' },
-  { id: 'appearance', name: { zh: '外观', en: 'Look' }, icon: '👤' },
-  { id: 'personality', name: { zh: '性格', en: 'Personality' }, icon: '💭' },
-  { id: 'backstory', name: { zh: '背景', en: 'Story' }, icon: '📖' },
-  { id: 'agent', name: { zh: '智能体', en: 'Agent' }, icon: '🤖' },
-  { id: 'export', name: { zh: '导出', en: 'Export' }, icon: '📄' },
+  { id: 'overview', name: { zh: '总览', en: 'Overview' }, icon: '' },
+  { id: 'style', name: { zh: '风格', en: 'Style' }, icon: '' },
+  { id: 'basic', name: { zh: '基础', en: 'Basic' }, icon: '' },
+  { id: 'appearance', name: { zh: '外观', en: 'Look' }, icon: '' },
+  { id: 'personality', name: { zh: '性格', en: 'Personality' }, icon: '' },
+  { id: 'backstory', name: { zh: '背景', en: 'Story' }, icon: '' },
+  { id: 'agent', name: { zh: '智能体', en: 'Agent' }, icon: '' },
+  { id: 'export', name: { zh: '导出', en: 'Export' }, icon: '' },
 ];
+
+// 最小/最大尺寸限制
+const MIN_WIDTH = 600;
+const MIN_HEIGHT = 400;
+const MAX_WIDTH_RATIO = 0.95;
+const MAX_HEIGHT_RATIO = 0.95;
 
 interface IntegratedPanelProps {
   isOpen: boolean;
@@ -36,7 +43,6 @@ interface IntegratedPanelProps {
   characters?: CharacterInput[];
   isZh: boolean;
 }
-
 
 export const IntegratedPanel: React.FC<IntegratedPanelProps> = ({
   isOpen,
@@ -47,16 +53,139 @@ export const IntegratedPanel: React.FC<IntegratedPanelProps> = ({
   const { state, actions } = useWorkshopState();
   const aiGenerate = useAIGenerate();
   const [activeTab, setActiveTab] = useState<IntegratedTab>('overview');
+  
+  // 面板尺寸和位置状态
   const [panelSize, setPanelSize] = useState({ width: 1000, height: 700 });
+  const [panelPosition, setPanelPosition] = useState({ x: 0, y: 0 });
+  const [isPositionInitialized, setIsPositionInitialized] = useState(false);
+  
+  // 拖拽状态
+  const [isDragging, setIsDragging] = useState(false);
+  const [isResizing, setIsResizing] = useState<string | null>(null);
+  const dragStartRef = useRef({ x: 0, y: 0, posX: 0, posY: 0, width: 0, height: 0 });
+  
+  // 模型选择状态
+  const [availableModels, setAvailableModels] = useState<{ name: string; model: string }[]>([]);
+  const [selectedModel, setSelectedModel] = useState<string>('');
 
-  // 初始化面板尺寸
+  // 初始化面板尺寸和位置
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && !isPositionInitialized) {
       const w = Math.min(1000, window.innerWidth * 0.92);
       const h = Math.min(700, window.innerHeight * 0.88);
       setPanelSize({ width: w, height: h });
+      setPanelPosition({
+        x: (window.innerWidth - w) / 2,
+        y: (window.innerHeight - h) / 2,
+      });
+      setIsPositionInitialized(true);
+      
+      getAvailableApiConfigs().then(({ configs, activeIndex }) => {
+        if (configs.length > 0) {
+          const models = configs.map((c) => ({
+            name: c.name || `${c.provider} - ${c.model}`,
+            model: c.model,
+          }));
+          setAvailableModels(models);
+          setSelectedModel(configs[activeIndex]?.model || configs[0]?.model || '');
+        }
+      });
     }
-  }, [isOpen]);
+    if (!isOpen) {
+      setIsPositionInitialized(false);
+    }
+  }, [isOpen, isPositionInitialized]);
+
+  // 拖拽移动处理
+  const handleDragStart = useCallback((e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest('button, select, input')) return;
+    e.preventDefault();
+    setIsDragging(true);
+    dragStartRef.current = {
+      x: e.clientX,
+      y: e.clientY,
+      posX: panelPosition.x,
+      posY: panelPosition.y,
+      width: panelSize.width,
+      height: panelSize.height,
+    };
+  }, [panelPosition, panelSize]);
+
+  // 调整大小处理
+  const handleResizeStart = useCallback((e: React.MouseEvent, direction: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsResizing(direction);
+    dragStartRef.current = {
+      x: e.clientX,
+      y: e.clientY,
+      posX: panelPosition.x,
+      posY: panelPosition.y,
+      width: panelSize.width,
+      height: panelSize.height,
+    };
+  }, [panelPosition, panelSize]);
+
+  // 鼠标移动处理
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (isDragging) {
+        const dx = e.clientX - dragStartRef.current.x;
+        const dy = e.clientY - dragStartRef.current.y;
+        const newX = Math.max(0, Math.min(window.innerWidth - panelSize.width, dragStartRef.current.posX + dx));
+        const newY = Math.max(0, Math.min(window.innerHeight - panelSize.height, dragStartRef.current.posY + dy));
+        setPanelPosition({ x: newX, y: newY });
+      } else if (isResizing) {
+        const dx = e.clientX - dragStartRef.current.x;
+        const dy = e.clientY - dragStartRef.current.y;
+        const maxW = window.innerWidth * MAX_WIDTH_RATIO;
+        const maxH = window.innerHeight * MAX_HEIGHT_RATIO;
+        
+        let newWidth = dragStartRef.current.width;
+        let newHeight = dragStartRef.current.height;
+        let newX = dragStartRef.current.posX;
+        let newY = dragStartRef.current.posY;
+        
+        if (isResizing.includes('e')) {
+          newWidth = Math.max(MIN_WIDTH, Math.min(maxW, dragStartRef.current.width + dx));
+        }
+        if (isResizing.includes('w')) {
+          const potentialWidth = dragStartRef.current.width - dx;
+          if (potentialWidth >= MIN_WIDTH && potentialWidth <= maxW) {
+            newWidth = potentialWidth;
+            newX = dragStartRef.current.posX + dx;
+          }
+        }
+        if (isResizing.includes('s')) {
+          newHeight = Math.max(MIN_HEIGHT, Math.min(maxH, dragStartRef.current.height + dy));
+        }
+        if (isResizing.includes('n')) {
+          const potentialHeight = dragStartRef.current.height - dy;
+          if (potentialHeight >= MIN_HEIGHT && potentialHeight <= maxH) {
+            newHeight = potentialHeight;
+            newY = dragStartRef.current.posY + dy;
+          }
+        }
+        
+        setPanelSize({ width: newWidth, height: newHeight });
+        setPanelPosition({ x: newX, y: newY });
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+      setIsResizing(null);
+    };
+
+    if (isDragging || isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+    }
+  }, [isDragging, isResizing, panelSize]);
 
   // 计算完成度
   const getCompletionPercent = useCallback(() => {
@@ -74,7 +203,7 @@ export const IntegratedPanel: React.FC<IntegratedPanelProps> = ({
 
   // AI 生成回调
   const handleGenerateNames = async (options: NamingOptions) => {
-    return aiGenerate.generateNames(options, state.wizardCharacter.style);
+    return aiGenerate.generateNames(options, state.wizardCharacter.style, isZh);
   };
 
   const handleGeneratePersonality = async (): Promise<Partial<CharacterPersonality>> => {
@@ -89,24 +218,38 @@ export const IntegratedPanel: React.FC<IntegratedPanelProps> = ({
     return aiGenerate.generateAgent(state.wizardCharacter);
   };
 
+  const handleGenerateAppearance = async (): Promise<string> => {
+    return aiGenerate.generateAppearance(state.wizardCharacter, isZh);
+  };
+
+  const handleGenerateField = async (field: string, currentValue: string): Promise<string> => {
+    return aiGenerate.generateAppearanceField(field, currentValue, state.wizardCharacter, isZh);
+  };
+
   if (!isOpen) return null;
 
+  // 调整大小手柄的样式
+  const resizeHandleStyle = (cursor: string): React.CSSProperties => ({
+    position: 'absolute',
+    zIndex: 10,
+    cursor,
+  });
 
   return (
     <div
       style={{
         position: 'fixed',
         inset: 0,
-        background: 'rgba(0,0,0,0.6)',
+        background: 'rgba(0,0,0,0.5)',
         zIndex: 1000,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
       }}
       onClick={onClose}
     >
       <div
         style={{
+          position: 'absolute',
+          left: panelPosition.x,
+          top: panelPosition.y,
           width: panelSize.width,
           height: panelSize.height,
           background: 'var(--ef-bg-primary)',
@@ -119,17 +262,40 @@ export const IntegratedPanel: React.FC<IntegratedPanelProps> = ({
         }}
         onClick={e => e.stopPropagation()}
       >
-        {/* 顶部标题栏 */}
-        <div style={{
-          padding: '12px 20px',
-          background: 'var(--ef-bg-secondary)',
-          borderBottom: '1px solid var(--ef-border)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}>
+        {/* 调整大小手柄 - 四边 */}
+        <div style={{ ...resizeHandleStyle('ns-resize'), top: 0, left: 10, right: 10, height: 6 }} onMouseDown={e => handleResizeStart(e, 'n')} />
+        <div style={{ ...resizeHandleStyle('ns-resize'), bottom: 0, left: 10, right: 10, height: 6 }} onMouseDown={e => handleResizeStart(e, 's')} />
+        <div style={{ ...resizeHandleStyle('ew-resize'), left: 0, top: 10, bottom: 10, width: 6 }} onMouseDown={e => handleResizeStart(e, 'w')} />
+        <div style={{ ...resizeHandleStyle('ew-resize'), right: 0, top: 10, bottom: 10, width: 6 }} onMouseDown={e => handleResizeStart(e, 'e')} />
+        {/* 调整大小手柄 - 四角 */}
+        <div style={{ ...resizeHandleStyle('nwse-resize'), top: 0, left: 0, width: 12, height: 12 }} onMouseDown={e => handleResizeStart(e, 'nw')} />
+        <div style={{ ...resizeHandleStyle('nesw-resize'), top: 0, right: 0, width: 12, height: 12 }} onMouseDown={e => handleResizeStart(e, 'ne')} />
+        <div style={{ ...resizeHandleStyle('nesw-resize'), bottom: 0, left: 0, width: 12, height: 12 }} onMouseDown={e => handleResizeStart(e, 'sw')} />
+        <div style={{ ...resizeHandleStyle('nwse-resize'), bottom: 0, right: 0, width: 12, height: 12 }} onMouseDown={e => handleResizeStart(e, 'se')} />
+
+        {/* 顶部标题栏 - 可拖拽移动 */}
+        <div
+          onMouseDown={handleDragStart}
+          style={{
+            padding: '12px 20px',
+            background: 'var(--ef-bg-secondary)',
+            borderBottom: '1px solid var(--ef-border)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            cursor: isDragging ? 'grabbing' : 'grab',
+            userSelect: 'none',
+          }}
+        >
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <span style={{ fontSize: 24 }}>🎭</span>
+            <div style={{ 
+              width: 32, height: 32, borderRadius: 8, 
+              background: 'var(--ef-accent)', 
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: 'white', fontSize: 14, fontWeight: 600,
+            }}>
+              角
+            </div>
             <div>
               <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--ef-text)' }}>
                 {state.wizardCharacter.name || (isZh ? '新角色' : 'New Character')}
@@ -152,6 +318,39 @@ export const IntegratedPanel: React.FC<IntegratedPanelProps> = ({
             </div>
           </div>
 
+          {/* 文字 AI 模型选择器 */}
+          {availableModels.length > 0 && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginRight: 16 }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ef-text-muted)" strokeWidth="2">
+                <path d="M12 2a10 10 0 1 0 10 10H12V2z" />
+                <path d="M12 2a10 10 0 0 1 10 10" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+              <select
+                value={selectedModel}
+                onChange={e => {
+                  setSelectedModel(e.target.value);
+                  setOverrideModel(e.target.value);
+                }}
+                style={{
+                  padding: '6px 10px',
+                  background: 'var(--ef-bg-tertiary)',
+                  border: '1px solid var(--ef-border)',
+                  borderRadius: 6,
+                  color: 'var(--ef-text)',
+                  fontSize: 12,
+                  cursor: 'pointer',
+                  minWidth: 120,
+                }}
+                title={isZh ? '文字 AI 模型' : 'Text AI Model'}
+              >
+                {availableModels.map((m, i) => (
+                  <option key={i} value={m.model}>{m.model}</option>
+                ))}
+              </select>
+            </div>
+          )}
+
           <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ef-text-muted)', fontSize: 20, padding: 4 }}>✕</button>
         </div>
 
@@ -170,7 +369,6 @@ export const IntegratedPanel: React.FC<IntegratedPanelProps> = ({
                 cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all 0.15s ease',
               }}
             >
-              <span>{tab.icon}</span>
               <span>{isZh ? tab.name.zh : tab.name.en}</span>
             </button>
           ))}
@@ -185,22 +383,21 @@ export const IntegratedPanel: React.FC<IntegratedPanelProps> = ({
             </div>
           )}
 
-          {/* 渲染各标签页内容 */}
           {activeTab === 'overview' && <OverviewTab character={state.wizardCharacter} isZh={isZh} onTabChange={setActiveTab} />}
           {activeTab === 'style' && <StyleTab value={state.wizardCharacter.style || {}} onChange={s => actions.updateWizardCharacter({ style: s })} isZh={isZh} />}
-          {activeTab === 'basic' && <BasicTab name={state.wizardCharacter.name || ''} tags={state.wizardCharacter.tags || []} style={state.wizardCharacter.style || {}} onNameChange={(n, o, m) => actions.updateWizardCharacter({ name: n, nameOrigin: o, nameMeaning: m })} onTagsChange={t => actions.updateWizardCharacter({ tags: t })} onGenerateNames={handleGenerateNames} isGenerating={aiGenerate.isGenerating} isZh={isZh} />}
-          {activeTab === 'appearance' && <AppearanceTab value={state.wizardCharacter.appearance || {}} characterName={state.wizardCharacter.name || ''} style={state.wizardCharacter.style || {}} tags={state.wizardCharacter.tags || []} onChange={a => actions.updateWizardCharacter({ appearance: a })} isZh={isZh} />}
+          {activeTab === 'basic' && <BasicTab name={state.wizardCharacter.name || ''} tags={state.wizardCharacter.tags || []} style={state.wizardCharacter.style || {}} gender={state.wizardCharacter.appearance?.gender} onNameChange={(n, o, m) => actions.updateWizardCharacter({ name: n, nameOrigin: o, nameMeaning: m })} onTagsChange={t => actions.updateWizardCharacter({ tags: t })} onGenderChange={g => actions.updateWizardCharacter({ appearance: { ...state.wizardCharacter.appearance, gender: g } })} onGenerateNames={handleGenerateNames} isGenerating={aiGenerate.isGenerating} isZh={isZh} />}
+          {activeTab === 'appearance' && <AppearanceTab value={state.wizardCharacter.appearance || {}} characterName={state.wizardCharacter.name || ''} style={state.wizardCharacter.style || {}} tags={state.wizardCharacter.tags || []} onChange={a => actions.updateWizardCharacter({ appearance: a })} onGenerateAppearance={handleGenerateAppearance} onGenerateField={handleGenerateField} isGenerating={aiGenerate.isGenerating} isZh={isZh} />}
           {activeTab === 'personality' && <PersonalityTab value={state.wizardCharacter.personality || {}} characterName={state.wizardCharacter.name || ''} onChange={p => actions.updateWizardCharacter({ personality: p })} onGenerate={handleGeneratePersonality} isGenerating={aiGenerate.isGenerating} isZh={isZh} />}
           {activeTab === 'backstory' && <BackstoryTab value={state.wizardCharacter.backstory || {}} characterName={state.wizardCharacter.name || ''} onChange={b => actions.updateWizardCharacter({ backstory: b })} onGenerate={handleGenerateBackstory} isGenerating={aiGenerate.isGenerating} isZh={isZh} />}
           {activeTab === 'agent' && <AgentTab value={state.wizardCharacter.agent || {}} character={state.wizardCharacter} onChange={a => actions.updateWizardCharacter({ agent: a })} onGenerate={handleGenerateAgent} isGenerating={aiGenerate.isGenerating} isZh={isZh} />}
           {activeTab === 'export' && <ExportTab character={state.wizardCharacter} isZh={isZh} />}
         </div>
-      </div>
 
-      {/* 版本管理（后悔药） */}
-      {state.versions.length > 0 && (
-        <VersionManager versions={state.versions} currentIndex={state.currentVersionIndex} onRestore={actions.restoreVersion} onClear={actions.clearVersions} isZh={isZh} />
-      )}
+        {/* 版本管理（后悔药） */}
+        {state.versions.length > 0 && (
+          <VersionManager versions={state.versions} currentIndex={state.currentVersionIndex} onRestore={actions.restoreVersion} onClear={actions.clearVersions} isZh={isZh} />
+        )}
+      </div>
     </div>
   );
 };
@@ -218,8 +415,8 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ character, isZh, onTabChange 
     <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: 20 }}>
       {/* 左侧：角色卡片 */}
       <div style={{ background: 'var(--ef-bg-secondary)', borderRadius: 12, padding: 20, textAlign: 'center' }}>
-        <div style={{ width: 120, height: 120, borderRadius: 12, background: 'var(--ef-bg-tertiary)', margin: '0 auto 16px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 48, overflow: 'hidden' }}>
-          {character.images?.[0]?.url ? <img src={character.images[0].url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : '👤'}
+        <div style={{ width: 120, height: 120, borderRadius: 12, background: 'var(--ef-bg-tertiary)', margin: '0 auto 16px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 32, overflow: 'hidden', color: 'var(--ef-text-muted)' }}>
+          {character.images?.[0]?.url ? <img src={character.images[0].url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : '头像'}
         </div>
         <div style={{ fontSize: 18, fontWeight: 600, color: 'var(--ef-text)', marginBottom: 4 }}>{character.name || (isZh ? '未命名' : 'Unnamed')}</div>
         <div style={{ fontSize: 12, color: 'var(--ef-text-muted)', marginBottom: 12 }}>{character.style?.genre || (isZh ? '未设定风格' : 'No style set')}</div>
@@ -233,16 +430,15 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ character, isZh, onTabChange 
       {/* 右侧：快速编辑入口 */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
         {[
-          { tab: 'style' as IntegratedTab, icon: '🎨', title: isZh ? '风格设定' : 'Style', desc: character.style?.genre || (isZh ? '点击设定' : 'Click to set'), done: !!character.style?.genre },
-          { tab: 'basic' as IntegratedTab, icon: '🏷️', title: isZh ? '基础信息' : 'Basic Info', desc: character.name || (isZh ? '点击设定' : 'Click to set'), done: !!character.name },
-          { tab: 'appearance' as IntegratedTab, icon: '👤', title: isZh ? '外观设计' : 'Appearance', desc: character.appearance?.description?.slice(0, 30) || (isZh ? '点击设定' : 'Click to set'), done: !!character.appearance?.description },
-          { tab: 'personality' as IntegratedTab, icon: '💭', title: isZh ? '性格设定' : 'Personality', desc: character.personality?.traits?.join(', ')?.slice(0, 30) || (isZh ? '点击设定' : 'Click to set'), done: !!character.personality?.description },
-          { tab: 'backstory' as IntegratedTab, icon: '📖', title: isZh ? '背景故事' : 'Backstory', desc: character.backstory?.origin?.slice(0, 30) || (isZh ? '点击设定' : 'Click to set'), done: !!character.backstory?.fullStory },
-          { tab: 'agent' as IntegratedTab, icon: '🤖', title: isZh ? '角色智能体' : 'Agent', desc: character.agent?.enabled ? (isZh ? '已启用' : 'Enabled') : (isZh ? '点击创建' : 'Click to create'), done: !!character.agent?.systemPrompt },
+          { tab: 'style' as IntegratedTab, title: isZh ? '风格设定' : 'Style', desc: character.style?.genre || (isZh ? '点击设定' : 'Click to set'), done: !!character.style?.genre },
+          { tab: 'basic' as IntegratedTab, title: isZh ? '基础信息' : 'Basic Info', desc: character.name || (isZh ? '点击设定' : 'Click to set'), done: !!character.name },
+          { tab: 'appearance' as IntegratedTab, title: isZh ? '外观设计' : 'Appearance', desc: character.appearance?.description?.slice(0, 30) || (isZh ? '点击设定' : 'Click to set'), done: !!character.appearance?.description },
+          { tab: 'personality' as IntegratedTab, title: isZh ? '性格设定' : 'Personality', desc: character.personality?.traits?.join(', ')?.slice(0, 30) || (isZh ? '点击设定' : 'Click to set'), done: !!character.personality?.description },
+          { tab: 'backstory' as IntegratedTab, title: isZh ? '背景故事' : 'Backstory', desc: character.backstory?.origin?.slice(0, 30) || (isZh ? '点击设定' : 'Click to set'), done: !!character.backstory?.fullStory },
+          { tab: 'agent' as IntegratedTab, title: isZh ? '角色智能体' : 'Agent', desc: character.agent?.enabled ? (isZh ? '已启用' : 'Enabled') : (isZh ? '点击创建' : 'Click to create'), done: !!character.agent?.systemPrompt },
         ].map(item => (
           <button key={item.tab} onClick={() => onTabChange(item.tab)} style={{ padding: 16, background: 'var(--ef-bg-secondary)', border: `1px solid ${item.done ? 'var(--ef-success, #22c55e)' : 'var(--ef-border)'}`, borderRadius: 10, cursor: 'pointer', textAlign: 'left', transition: 'all 0.15s ease' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-              <span style={{ fontSize: 20 }}>{item.icon}</span>
               <span style={{ fontSize: 14, fontWeight: 500, color: 'var(--ef-text)' }}>{item.title}</span>
               {item.done && <span style={{ fontSize: 12, color: 'var(--ef-success, #22c55e)' }}>✓</span>}
             </div>
@@ -324,7 +520,7 @@ const ExportTab: React.FC<ExportTabProps> = ({ character, isZh }) => {
 
       <div style={{ display: 'flex', gap: 12, marginBottom: 24 }}>
         <button onClick={handleExportPDF} disabled={isExporting} style={{ flex: 1, padding: '14px 20px', background: 'var(--ef-accent)', border: 'none', borderRadius: 10, color: 'white', fontSize: 14, fontWeight: 500, cursor: isExporting ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-          {isExporting ? (<><span style={{ animation: 'spin 1s linear infinite' }}>⏳</span>{isZh ? '生成中...' : 'Generating...'}</>) : (<><span>📄</span>{isZh ? '导出 PDF' : 'Export PDF'}</>)}
+          {isExporting ? (isZh ? '生成中...' : 'Generating...') : (isZh ? '导出 PDF' : 'Export PDF')}
         </button>
       </div>
 
@@ -332,16 +528,16 @@ const ExportTab: React.FC<ExportTabProps> = ({ character, isZh }) => {
         <label style={{ display: 'block', fontSize: 13, fontWeight: 500, marginBottom: 12, color: 'var(--ef-text-muted)' }}>{isZh ? '其他格式' : 'Other Formats'}</label>
         <div style={{ display: 'flex', gap: 12 }}>
           <button onClick={() => { const blob = new Blob([JSON.stringify(character, null, 2)], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `${character.name || 'character'}.json`; a.click(); }} style={{ flex: 1, padding: '12px 16px', background: 'var(--ef-bg-tertiary)', border: '1px solid var(--ef-border)', borderRadius: 8, color: 'var(--ef-text)', fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-            <span>📋</span> JSON
+            JSON
           </button>
           <button onClick={() => { const md = generateMarkdown(character, isZh); const blob = new Blob([md], { type: 'text/markdown' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `${character.name || 'character'}.md`; a.click(); }} style={{ flex: 1, padding: '12px 16px', background: 'var(--ef-bg-tertiary)', border: '1px solid var(--ef-border)', borderRadius: 8, color: 'var(--ef-text)', fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-            <span>📝</span> Markdown
+            Markdown
           </button>
         </div>
       </div>
 
       <div style={{ padding: 16, background: 'var(--ef-bg-tertiary)', borderRadius: 10, fontSize: 12, color: 'var(--ef-text-muted)', lineHeight: 1.6 }}>
-        <div style={{ fontWeight: 500, marginBottom: 8, color: 'var(--ef-text)' }}>{isZh ? '📄 PDF 包含内容' : '📄 PDF Contents'}</div>
+        <div style={{ fontWeight: 500, marginBottom: 8, color: 'var(--ef-text)' }}>{isZh ? 'PDF 包含内容' : 'PDF Contents'}</div>
         <ul style={{ margin: 0, paddingLeft: 20 }}>
           <li>{isZh ? '角色立绘/头像' : 'Character portrait'}</li>
           <li>{isZh ? '基础信息与标签' : 'Basic info & tags'}</li>

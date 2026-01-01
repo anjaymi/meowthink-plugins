@@ -234,10 +234,11 @@ export interface WorldElement {
 
 // ==================== 名字生成模块 ====================
 export interface NamingOptions {
-  culture: 'chinese' | 'japanese' | 'western' | 'fantasy' | 'scifi' | 'custom';
+  culture: 'chinese' | 'japanese' | 'korean' | 'western' | 'russian' | 'arabic' | 'indian' | 'latin' | 'african' | 'southeast_asian' | 'nordic' | 'greek' | 'fantasy' | 'scifi' | 'custom';
   gender?: 'male' | 'female' | 'neutral';
   style?: string;
   count: number;
+  translateToChinese?: boolean; // 是否翻译成中文
 }
 
 export interface NamingResult extends GenerateResult {

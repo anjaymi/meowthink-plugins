@@ -14,7 +14,7 @@
     "zh": "1. 打开参考素材面板\n2. 搜索关键词（支持中文自动翻译）\n3. 从下拉菜单选择目标项目\n4. 点击 + 添加图片节点，或调色板图标提取配色\n5. 使用分组管理收藏的素材"
   },
   "author": "MeowThink",
-  "homepage": "https://github.com/anjaymi/meowthink-plugins/tree/main/plugins/reference-collector",
+  "homepage": "https://github.com/anjaymi/meowthink-plugins",
   "icon": "image",
   "category": "productivity",
   "main": "index.ts",

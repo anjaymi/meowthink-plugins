@@ -4,14 +4,14 @@
     "en": "AI Image Generation",
     "zh": "AI 生图"
   },
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": {
-    "en": "Generate images using AI models with multi-model support (Gemini, SiliconFlow, OpenRouter, Volcano)",
-    "zh": "使用 AI 模型生成图片，支持多模型配置（Gemini、硅基流动、OpenRouter、火山引擎）"
+    "en": "Generate images using AI models (Gemini, SiliconFlow, OpenRouter) with history management and batch generation",
+    "zh": "使用 AI 模型生成图片（Gemini、硅基流动、OpenRouter），支持历史管理和批量生成"
   },
   "usage": {
-    "en": "1. Configure API Key in extension settings (supports multiple model configs)\n2. Right-click on canvas -> 'AI Generate Image'\n3. Or right-click on a node -> 'Generate Image' to use node text as prompt\n4. Use the image generation panel for more options (aspect ratio, resolution)",
-    "zh": "1. 在扩展设置中配置 API Key（支持多模型配置）\n2. 右键画布 -> 'AI 生成图片'\n3. 或右键节点 -> '生成图片' 使用节点文本作为提示词\n4. 使用生图面板可选择比例、分辨率等更多选项"
+    "en": "1. Open AI Image Gen panel\n2. Enter prompt or use tag suggestions\n3. Select model and parameters\n4. Generate images\n5. View history and add to canvas",
+    "zh": "1. 打开AI生图面板\n2. 输入提示词或使用标签建议\n3. 选择模型和参数\n4. 生成图片\n5. 查看历史并添加到画布"
   },
   "author": "MeowThink",
   "homepage": "https://github.com/anjaymi/meowthink-plugins",
@@ -22,64 +22,53 @@
   "contributes": {
     "commands": [
       {
-        "command": "generateImage",
-        "title": { "en": "Generate Image", "zh": "生成图片" },
+        "command": "openImageGen",
+        "title": { "en": "Open AI Image Gen", "zh": "打开AI生图" },
         "icon": "sparkles"
       },
       {
-        "command": "generateFromNode",
-        "title": { "en": "Generate Image from Node", "zh": "从节点生成图片" },
-        "icon": "image"
-      },
-      {
-        "command": "configureModel",
-        "title": { "en": "Configure Image Model", "zh": "配置图像模型" },
-        "icon": "settings"
+        "command": "generateFromSelection",
+        "title": { "en": "Generate from Selection", "zh": "从选中内容生成" },
+        "icon": "wand-2"
       }
     ],
     "menus": [
       {
-        "command": "generateFromNode",
-        "location": "context.node",
-        "order": 80
-      },
-      {
-        "command": "generateImage",
-        "location": "context.canvas",
-        "order": 60
+        "command": "openImageGen",
+        "location": "sidebar.ai",
+        "order": 20
       }
     ],
     "settings": [
       {
-        "id": "provider",
-        "title": { "en": "Provider", "zh": "服务商" },
+        "id": "defaultProvider",
+        "title": { "en": "Default Provider", "zh": "默认服务商" },
         "type": "select",
-        "default": "siliconflow",
+        "default": "gemini",
         "options": [
           { "value": "gemini", "label": { "en": "Google Gemini", "zh": "Google Gemini" } },
           { "value": "siliconflow", "label": { "en": "SiliconFlow", "zh": "硅基流动" } },
-          { "value": "openrouter", "label": { "en": "OpenRouter", "zh": "OpenRouter" } },
-          { "value": "volcano", "label": { "en": "Volcano (Doubao)", "zh": "火山引擎 (豆包)" } },
-          { "value": "custom", "label": { "en": "Custom", "zh": "自定义" } }
+          { "value": "openrouter", "label": { "en": "OpenRouter", "zh": "OpenRouter" } }
         ]
       },
       {
-        "id": "model",
-        "title": { "en": "Model", "zh": "模型" },
-        "type": "string",
-        "default": "black-forest-labs/FLUX.1-schnell"
+        "id": "autoSaveHistory",
+        "title": { "en": "Auto Save History", "zh": "自动保存历史" },
+        "type": "boolean",
+        "default": true
       },
       {
-        "id": "apiKey",
-        "title": { "en": "API Key", "zh": "API Key" },
-        "type": "string",
-        "default": ""
-      },
-      {
-        "id": "endpoint",
-        "title": { "en": "API Endpoint", "zh": "API 端点" },
-        "type": "string",
-        "default": "https://api.siliconflow.cn/v1/images/generations"
+        "id": "defaultSize",
+        "title": { "en": "Default Size", "zh": "默认尺寸" },
+        "type": "select",
+        "default": "1024x1024",
+        "options": [
+          { "value": "512x512", "label": "512x512" },
+          { "value": "768x768", "label": "768x768" },
+          { "value": "1024x1024", "label": "1024x1024" },
+          { "value": "1024x768", "label": "1024x768 (横)" },
+          { "value": "768x1024", "label": "768x1024 (竖)" }
+        ]
       }
     ]
   },
