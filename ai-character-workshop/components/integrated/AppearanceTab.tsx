@@ -134,14 +134,32 @@ export const AppearanceTab: React.FC<AppearanceTabProps> = ({
     // 年龄
     if (value.age) parts.push(`${value.age} years old`);
     
+    // 身材
+    if (value.height) parts.push(`${value.height} tall`);
+    if (value.build) parts.push(`${value.build} build`);
+    if (value.skinTone) parts.push(`${value.skinTone} skin`);
+
     // 发色/发型
-    if (value.hairColor) parts.push(`${value.hairColor} hair`);
+    if (value.hairStyle || value.hairColor) {
+        const hair = [value.hairColor, value.hairStyle, 'hair'].filter(Boolean).join(' ');
+        parts.push(hair);
+    }
     
     // 瞳色
     if (value.eyeColor) parts.push(`${value.eyeColor} eyes`);
+
+    // 特征
+    if (value.distinguishingFeatures && value.distinguishingFeatures.length > 0) {
+        parts.push(value.distinguishingFeatures.join(', '));
+    }
     
     // 服装
     if (value.clothing) parts.push(value.clothing);
+
+    // 配饰
+    if (value.accessories && value.accessories.length > 0) {
+        parts.push(`wearing ${value.accessories.join(', ')}`);
+    }
     
     // 外观描述（取前100字符避免过长）
     if (value.description) {
@@ -161,6 +179,12 @@ export const AppearanceTab: React.FC<AppearanceTabProps> = ({
   // 更新外观字段
   const updateField = (field: keyof CharacterAppearance, val: string) => {
     onChange({ ...value, [field]: val });
+  };
+
+  const updateArrayField = (field: keyof CharacterAppearance, val: string) => {
+    // Split by comma/newline and filter empty
+    const array = val.split(/[,\n]/).map(s => s.trim()).filter(Boolean);
+    onChange({ ...value, [field]: array });
   };
 
   // AI 生成单个字段
@@ -255,17 +279,65 @@ export const AppearanceTab: React.FC<AppearanceTabProps> = ({
           {renderFieldWithAI('gender', isZh ? '性别' : 'Gender', '', true, [
             { value: 'unknown', label: isZh ? '未设定' : 'Unknown' },
             { value: 'male', label: isZh ? '男性' : 'Male' },
-            { value: 'female', label: isZh ? '女性' : 'Female' },
+            { value: 'female', label: isZh ? '男性' : 'Female' },
             { value: 'other', label: isZh ? '其他' : 'Other' },
           ])}
           {renderFieldWithAI('age', isZh ? '年龄' : 'Age', isZh ? '例如：25岁' : 'e.g., 25')}
-          {renderFieldWithAI('hairColor', isZh ? '发色' : 'Hair', isZh ? '黑色长发' : 'Black long')}
-          {renderFieldWithAI('eyeColor', isZh ? '瞳色' : 'Eyes', isZh ? '蓝色' : 'Blue')}
         </div>
 
-        {/* 服装 */}
-        <div style={{ marginBottom: 12 }}>
+        {/* 身体特征 Section */}
+         <h5 style={{ fontSize: 12, fontWeight: 600, color: 'var(--ef-text-secondary)', marginBottom: 8, marginTop: 16 }}>
+            {isZh ? '身体特征' : 'Body Features'}
+         </h5>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 12 }}>
+           {renderFieldWithAI('height', isZh ? '身高' : 'Height', isZh ? '175cm' : '5\'9"')}
+           {renderFieldWithAI('build', isZh ? '体型' : 'Build', isZh ? '匀称' : 'Athletic')}
+           {renderFieldWithAI('skinTone', isZh ? '肤色' : 'Skin', isZh ? '白皙' : 'Fair')}
+        </div>
+
+        {/* 面部特征 Section */}
+         <h5 style={{ fontSize: 12, fontWeight: 600, color: 'var(--ef-text-secondary)', marginBottom: 8, marginTop: 16 }}>
+            {isZh ? '面部特征' : 'Facial Features'}
+         </h5>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 12 }}>
+           {renderFieldWithAI('hairStyle', isZh ? '发型' : 'Hair Style', isZh ? '波浪卷' : 'Wavy')}
+           {renderFieldWithAI('hairColor', isZh ? '发色' : 'Hair Color', isZh ? '黑色' : 'Black')}
+           {renderFieldWithAI('eyeColor', isZh ? '瞳色' : 'Eye Color', isZh ? '蓝色' : 'Blue')}
+        </div>
+
+        {/* 服装与配饰 */}
+        <h5 style={{ fontSize: 12, fontWeight: 600, color: 'var(--ef-text-secondary)', marginBottom: 8, marginTop: 16 }}>
+            {isZh ? '服装与配饰' : 'Style & Accessories'}
+        </h5>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16 }}>
           {renderFieldWithAI('clothing', isZh ? '服装' : 'Clothing', isZh ? '描述角色的服装风格...' : 'Describe clothing style...')}
+          
+          {/* Array fields handled as text for simplicity in this refactor, splitting by comma */}
+          <div>
+            <label style={{ display: 'block', fontSize: 11, fontWeight: 500, color: 'var(--ef-text-muted)', marginBottom: 4 }}>
+                {isZh ? '配饰 (用逗号分隔)' : 'Accessories (comma separated)'}
+            </label>
+            <input
+                type="text"
+                value={(value.accessories || []).join(', ')}
+                onChange={(e) => updateArrayField('accessories', e.target.value)}
+                placeholder={isZh ? '眼镜,围巾,耳环...' : 'Glasses, Scarf, Earrings...'}
+                style={{ width: '100%', padding: '7px 10px', background: 'var(--ef-bg-tertiary)', border: '1px solid var(--ef-border)', borderRadius: 6, color: 'var(--ef-text)', fontSize: 12 }}
+            />
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: 11, fontWeight: 500, color: 'var(--ef-text-muted)', marginBottom: 4 }}>
+                {isZh ? '显著特征 (用逗号分隔)' : 'Distinguishing Features (comma separated)'}
+            </label>
+             <input
+                type="text"
+                value={(value.distinguishingFeatures || []).join(', ')}
+                onChange={(e) => updateArrayField('distinguishingFeatures', e.target.value)}
+                placeholder={isZh ? '伤疤,纹身,美人痣...' : 'Scar, Tattoo, Beauty mark...'}
+                style={{ width: '100%', padding: '7px 10px', background: 'var(--ef-bg-tertiary)', border: '1px solid var(--ef-border)', borderRadius: 6, color: 'var(--ef-text)', fontSize: 12 }}
+            />
+          </div>
         </div>
 
         {/* 外观描述 */}
